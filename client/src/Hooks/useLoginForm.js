@@ -71,6 +71,8 @@ export const useLoginForm = (doLogin) => {
     } else {
       doLogin(values).then((result) => {
         if (result.success) {
+          let token = result.returnedValue.token;
+          localStorage.setItem("user", token);
         } else {
           setAllFieldsErr(`${result.errNested}`);
           setTimeout(() => {
