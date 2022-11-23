@@ -10,12 +10,30 @@ module.exports = {
       const user = new User(req.body);
       user.save((err, doc) => {
         if (err) return errbody(res, err);
-        return respbody(res, { doc });
+        else return respbody(res, doc);
       });
     } catch (err) {
       return errbody(res, err);
     }
   },
 
-  
+  doLogin: async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const user = await User.findOne({ email });
+      if (user) {
+        const correctPassword = await user.comparePassword(password);
+        if (correctPassword) {
+          const token = await user.generateToken();
+          return respbody(res, { ...user, token });
+        } else {
+          return errbody(res, "Incorrect Password");
+        }
+      } else {
+        return errbody(res, "Invalid Username");
+      }
+    } catch (err) {
+      return errbody(res, err);
+    }
+  },
 };

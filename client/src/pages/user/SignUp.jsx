@@ -13,7 +13,7 @@ import Navbar from "../../components/user/Navbar";
 import FormInput from "../../components/user/FormInput";
 import { useForm } from "../../Hooks/useForm";
 // import { axiosUserInstance as axios } from "../../config/http";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { postRequest } from "../../helper/HandleRequest";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -41,23 +41,12 @@ const SAvatar = styled(Avatar)(({ theme }) => ({
 const doSignUp = async (values) => {
   const route = "/signup";
   const respData = await postRequest(route, values);
-  let errData = respData.err.response.data;
-  if (!respData.success && errData?.err) {
-    return errData.err;
-  }
+  return respData
 };
 
 const SignUp = () => {
-  const {
-    handleChange,
-    values,
-    errors,
-    handleSubmit,
-    confirmPasswordErr,
-    fieldsErr,
-  } = useForm(doSignUp);
-  // console.log(values);
-  // console.log("formErrors", errors);
+  const { handleChange, errors, handleSubmit, confirmPasswordErr, fieldsErr } =
+    useForm(doSignUp);
 
   return (
     <>

@@ -14,6 +14,7 @@ import Navbar from "../../components/user/Navbar";
 import FormInput from "../../components/user/FormInput";
 import { useLoginForm } from "../../Hooks/useLoginForm";
 import { Link } from "react-router-dom";
+import { postRequest } from "../../helper/HandleRequest";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -37,8 +38,11 @@ const SAvatar = styled(Avatar)(({ theme }) => ({
   m: 1,
   backgroundColor: theme.palette.primary.blue,
 }));
-const doLogin = () => {
-  alert("kdfjk");
+
+const doLogin = async (values) => {
+  const route = "/login";
+  const respData = await postRequest(route, values);
+  return respData;
 };
 
 const Login = () => {
@@ -72,7 +76,7 @@ const Login = () => {
             <Typography variant="h6">Login</Typography>
             {fieldsErr && (
               <Alert sx={{ textTransform: "capitalize" }} severity="error">
-                Please fill all fields
+                {fieldsErr}
               </Alert>
             )}
             <Box

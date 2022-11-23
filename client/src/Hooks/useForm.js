@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { omit } from "lodash";
+import { useNavigate } from "react-router-dom";
 
 export const useForm = (doSignUp) => {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [fieldsErr, setAllFieldsErr] = useState("");
   const [confirmPasswordErr, setConfirmPasswordErr] = useState(false);
+  const navigate = useNavigate();
   const validate = (event, name, value, values) => {
     switch (name) {
       case "name":
@@ -77,11 +79,16 @@ export const useForm = (doSignUp) => {
       Object.keys(values).length === 5
     ) {
       // callback();
-      doSignUp(values).then((err) => {
-        setAllFieldsErr(`${ err }`);
-        setTimeout(() => {
-          setAllFieldsErr("");
-        }, "1500");
+      doSignUp(values).then((data) => {
+        console.log(data);
+        if (data.success) {
+          navigate("/login");
+        } else {
+          setAllFieldsErr(`${data.errNested}`);
+          setTimeout(() => {
+            setAllFieldsErr("");
+          }, "1500");
+        }
       });
     } else if (Object.keys(values).length !== 5) {
       // alert('fill all fields')

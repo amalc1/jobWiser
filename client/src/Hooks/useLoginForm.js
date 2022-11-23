@@ -5,7 +5,7 @@ export const useLoginForm = (doLogin) => {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [emailErr, setEmailErr] = useState(null);
-  const [fieldsErr, setAllFieldsErr] = useState(false);
+  const [fieldsErr, setAllFieldsErr] = useState("");
   const [passErr, setPassErr] = useState(null);
   function validate(name, value) {
     switch (name) {
@@ -22,7 +22,7 @@ export const useLoginForm = (doLogin) => {
         } else {
           let newObj = omit(errors, "email");
           setErrors(newObj);
-          setEmailErr(false); 
+          setEmailErr(false);
         }
         break;
 
@@ -64,12 +64,20 @@ export const useLoginForm = (doLogin) => {
       errors?.email ? setEmailErr(true) : setEmailErr(false);
       errors?.password ? setPassErr(true) : setPassErr(false);
     } else if (Object.keys(values).length <= 1) {
-      setAllFieldsErr(true);
+      setAllFieldsErr("Please Fill All Fields");
       setTimeout(() => {
-        setAllFieldsErr(false);
+        setAllFieldsErr("");
       }, "1500");
     } else {
-      doLogin()
+      doLogin(values).then((result) => {
+        if (result.success) {
+        } else {
+          setAllFieldsErr(`${result.errNested}`);
+          setTimeout(() => {
+            setAllFieldsErr("");
+          }, "1500");
+        }
+      });
     }
   };
 
