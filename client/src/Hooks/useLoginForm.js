@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { omit } from "lodash";
+import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../Context/Global";
 
 export const useLoginForm = (doLogin) => {
   const [values, setValues] = useState({});
@@ -7,6 +9,8 @@ export const useLoginForm = (doLogin) => {
   const [emailErr, setEmailErr] = useState(null);
   const [fieldsErr, setAllFieldsErr] = useState("");
   const [passErr, setPassErr] = useState(null);
+  const navigate = useNavigate();
+  const { setloggedUser } = useContext(GlobalContext);
   function validate(name, value) {
     switch (name) {
       case "email":
@@ -47,8 +51,8 @@ export const useLoginForm = (doLogin) => {
 
   const handleChange = (event) => {
     event.persist();
-    console.log("input name", event.target.name);
-    console.log("input value", event.target.value);
+    // console.log("input name", event.target.name);
+    // console.log("input value", event.target.value);
     let name = event.target.name;
     let val = event.target.value;
     validate(name, val);
@@ -71,8 +75,12 @@ export const useLoginForm = (doLogin) => {
     } else {
       doLogin(values).then((result) => {
         if (result.success) {
-          let token = result.returnedValue.token;
-          localStorage.setItem("user", token);
+          let data = result.returnedValue;
+          delete data?._doc["password"];
+          localStorage.setItem("userToken", data?.token);
+          localStorage.setItem("userInfo", JSON.stringify(data?._doc))
+          setloggedUser(data?._doc);
+          navigate("/feed");
         } else {
           setAllFieldsErr(`${result.errNested}`);
           setTimeout(() => {

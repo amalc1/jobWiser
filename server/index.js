@@ -7,6 +7,18 @@ const logger = require("morgan");
 require("dotenv").config();
 const mongoose = require("mongoose");
 
+mongoose
+  .connect(process.env.mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("database Connected");
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+
 const userRoutes = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
@@ -17,20 +29,11 @@ app.use(cookieParser());
 app.use(logger("dev"));
 
 //routing
-app.use("/",userRoutes);
+app.use("/", userRoutes);
 // app.use("/admin",adminRoutes);
 
 const port = process.env.PORT || 5000;
 
-mongoose
-  .connect(process.env.mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("MongoDB Connected...");
-    app.listen(port, () => {
-      console.log(`Server Listening on ${port}`);
-    });
-  })
-  .catch((err) => console.log(err));
+app.listen(port, () => {
+  console.log(`Server Listening on ${port}`);
+});

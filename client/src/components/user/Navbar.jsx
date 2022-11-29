@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
@@ -33,15 +33,20 @@ const Navbar = () => {
     <>
       <AppBar sx={{ bgcolor: "#F5F5F5", color: "black" }}>
         <StyledToolbar position="sticky">
-          <Typography variant="h6">
-            Cozmo<span style={{ color: "#4540DB" }}>Solutions</span>
-          </Typography>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Typography variant="h6" style={{ color: "black" }}>
+              Job<span style={{ color: "#4540DB" }}>Wiser</span>
+            </Typography>
+          </Link>
           <Box sx={{ color: "#4540DB" }}>
             <Stack direction="row" spacing={2}>
               <Button
                 variant="text"
                 sx={{ color: "black", textTransform: "capitalize" }}
-               onClick={()=>{navigate('/login')}}>
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
                 Login
               </Button>
               <BlueButton

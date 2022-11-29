@@ -7,7 +7,7 @@ const axiosUserInstance = axios.create({
 axiosUserInstance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const token = localStorage.getItem("user");
+    const token = localStorage.getItem("userToken");
     config.headers.token = `Bearer ${token ? token : ""}`;
     config.headers["Access-Control-Allow-Origin"] = "*";
     config.headers["Content-Type"] = "application/json";

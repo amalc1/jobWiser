@@ -17,7 +17,7 @@ import { Link, Navigate } from "react-router-dom";
 import { postRequest } from "../../helper/HandleRequest";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: theme.palette.primary.gray,
   padding: "1rem",
   borderRadius: "25px",
   width: "30rem",

@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 import { postRequest } from "../../helper/HandleRequest";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: theme.palette.primary.gray,
   padding: "0.8rem",
   borderRadius: "25px",
   width: "26rem",
@@ -49,7 +49,7 @@ const Login = () => {
   const { handleChange, handleSubmit, errors, passErr, emailErr, fieldsErr } =
     useLoginForm(doLogin);
   // const { email, password } = errors;
-  console.log(errors);
+  // console.log(errors);
   return (
     <>
       <Navbar />
