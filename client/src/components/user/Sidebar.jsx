@@ -1,5 +1,7 @@
 import { Avatar, Box, Paper, styled, Typography, Button } from "@mui/material";
 import React from "react";
+import { useContext } from "react";
+import { GlobalContext } from "../../Context/Global";
 import noAvatar from "../../images/avatar.png";
 
 const ProBox = styled(Box)(({ theme }) => ({
@@ -19,6 +21,8 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const Sidebar = () => {
+ const {loggedUser} = useContext(GlobalContext)
+
   return (
     <ProBox flex={1}>
       <Box position="fixed">
@@ -36,7 +40,7 @@ const Sidebar = () => {
             marginBottom={2}
           >
             <Typography variant="h6" textAlign="center">
-              John doe
+              {loggedUser?.name}
             </Typography>
             <Typography variant="overline" gutterBottom>
               UI/UX Designer

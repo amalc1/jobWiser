@@ -13,4 +13,17 @@ const postRequest = async (route, data) => {
   }
 };
 
-export { postRequest };
+const getRequest = async (route, data) => {
+  try {
+    const result = await axiosUser.get(route);
+    return result?.data;
+  } catch (error) {
+    let errNested = error?.response?.data?.err;
+    return {
+      success: false,
+      errNested,
+    };
+  }
+};
+
+export { postRequest, getRequest };

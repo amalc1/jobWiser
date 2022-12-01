@@ -8,7 +8,6 @@ import {
 } from "@mui/icons-material";
 import {
   Avatar,
-  Box,
   Card,
   CardActions,
   CardContent,
@@ -18,36 +17,32 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import noAvatar from "../../images/avatar.png";
 
-const Post = () => {
+const Post = ({ post }) => {
+  let { name, description, image, date } = post;
   return (
     <>
       <Card sx={{ height: "37rem", margin: 4 }} elevation={8}>
         <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-              R
-            </Avatar>
-          }
+          avatar={<Avatar src={noAvatar} aria-label="recipe" />}
           action={
             <IconButton aria-label="settings">
               <MoreVert />
             </IconButton>
           }
-          title="John Doe"
-          subheader="September 14, 2022"
+          title={name}
+          subheader={date}
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            This impressive paella is a perfect party dish and a fun meal to
-            cook together with your guests. Add 1 cup of frozen peas along with
-            the mussels, if you like.
+            {description}
           </Typography>
         </CardContent>
         <CardMedia
           component="img"
           height="64%"
-          image="https://images.pexels.com/photos/4534200/pexels-photo-4534200.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          image={image}
           alt="Paella dish"
         />
         <CardActions

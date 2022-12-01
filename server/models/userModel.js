@@ -42,7 +42,7 @@ userSchema.methods.comparePassword = async function (password) {
 
 userSchema.methods.generateToken = function () {
   var user = this;
-  var token =  jwt.sign(
+  var token = jwt.sign(
     { userId: user._id.toHexString() },
     process.env.jWT_USER,
     {
@@ -54,4 +54,4 @@ userSchema.methods.generateToken = function () {
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+module.exports = { User };

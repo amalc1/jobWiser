@@ -14,6 +14,7 @@ import { Close, PhotoSizeSelectActual, Send } from "@mui/icons-material/";
 import React from "react";
 import { useState } from "react";
 import noAvatar from "../../images/avatar.png";
+import { postRequest } from "../../helper/HandleRequest";
 
 const SBox = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.gray,
@@ -38,10 +39,10 @@ const StyledModal = styled(Modal)({
   justifyContent: "center",
 });
 
-const AddPost = () => {
+const AddPost = ({ setRender }) => {
   const [open, setOpen] = useState(false);
-  const [file, setFile] = useState("");
   const [image, setImage] = useState("");
+  const [content, setContent] = useState("");
 
   function previewFiles(file) {
     const reader = new FileReader();
@@ -51,9 +52,26 @@ const AddPost = () => {
     };
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setOpen(false);
+    setImage("");
+    setContent("");
+    const { _id, name } = JSON.parse(localStorage.getItem("userInfo"));
+    const result = await postRequest("/posts", {
+      _id,
+      name,
+      postContent: content,
+      image,
+      date: new Date().toDateString(),
+    });
+    if (result.success) {
+      setRender("renderAgain");
+    }
+  };
+
   const handleChange = (e) => {
     const file = e.target.files[0];
-    setFile(file);
     previewFiles(file);
   };
 
@@ -104,9 +122,10 @@ const AddPost = () => {
         >
           <Box
             bgcolor="white"
-            p={3}
+            px={2}
+            py={1}
             borderRadius={5}
-            sx={{ width: "35%", height: "auto", outline: "none" }}
+            sx={{ width: "35%", minHeight: "30%", outline: "none" }}
           >
             <Box
               display="flex"
@@ -120,6 +139,8 @@ const AddPost = () => {
                 sx={{ cursor: "pointer" }}
                 onClick={(e) => {
                   setOpen(false);
+                  setImage("");
+                  setContent("");
                 }}
               />
             </Box>
@@ -132,37 +153,49 @@ const AddPost = () => {
                 John Doe
               </Typography>
             </UserBox>
-            <TextField
-              sx={{ width: "100%" }}
-              id="standard-multiline-static"
-              multiline
-              rows={3}
-              placeholder="What's on your mind?"
-              variant="standard"
-            />
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "90%",
-                mx: "auto",
-                marginTop: "0.5rem",
-              }}
-            >
-              <Button component="label">
-                <PhotoSizeSelectActual />
-                <input
-                  type="file"
-                  accept="image/png, image/jpeg, image/jpg, image/jfif"
-                  onChange={handleChange}
-                  hidden
-                />
-              </Button>
-              <Button>
-                <Send sx={{ color: "blue" }} />
-              </Button>
-            </Box>
-            <img src={image} alt="" />
+            <form onSubmit={handleSubmit}>
+              <TextField
+                sx={{ width: "100%" }}
+                id="standard-multiline-static"
+                multiline
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={3}
+                placeholder="What's on your mind?"
+                variant="standard"
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "90%",
+                  mx: "auto",
+                  marginTop: "0.5rem",
+                }}
+              >
+                <Button component="label">
+                  <PhotoSizeSelectActual />
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg, image/jpg, image/jfif"
+                    onChange={handleChange}
+                    hidden
+                  />
+                </Button>
+                <Button type="submit">
+                  <Send sx={{ color: "blue" }} />
+                </Button>
+              </Box>
+              {image && (
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <img
+                    style={{ width: "50%", height: "50%" }}
+                    src={image}
+                    alt=""
+                  />
+                </Box>
+              )}
+            </form>
           </Box>
         </StyledModal>
       </SBox>
