@@ -46,7 +46,7 @@ userSchema.methods.generateToken = function () {
     { userId: user._id.toHexString() },
     process.env.jWT_USER,
     {
-      expiresIn: "1h",
+      expiresIn: "1d",
     }
   );
   return token;

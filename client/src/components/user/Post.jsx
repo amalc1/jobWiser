@@ -1,29 +1,23 @@
 import React from "react";
-import {
-  Comment,
-  Favorite,
-  FavoriteBorder,
-  MoreVert,
-  Share,
-} from "@mui/icons-material";
+import { MoreVert } from "@mui/icons-material";
 import {
   Avatar,
   Card,
-  CardActions,
   CardContent,
   CardHeader,
   CardMedia,
-  Checkbox,
   IconButton,
   Typography,
 } from "@mui/material";
 import noAvatar from "../../images/avatar.png";
+import PostFunctions from "../user/PostFunctions";
+import { useState } from "react";
 
-const Post = ({ post }) => {
-  let { name, description, image, date } = post;
+const Post = ({ post, setLike}) => {
+  let { name, description, image, date, ...otherKeys } = post;
   return (
     <>
-      <Card sx={{ height: "37rem", margin: 4 }} elevation={8}>
+      <Card sx={{ height: "auto", margin: 4 }} elevation={8}>
         <CardHeader
           avatar={<Avatar src={noAvatar} aria-label="recipe" />}
           action={
@@ -39,33 +33,8 @@ const Post = ({ post }) => {
             {description}
           </Typography>
         </CardContent>
-        <CardMedia
-          component="img"
-          height="64%"
-          image={image}
-          alt="Paella dish"
-        />
-        <CardActions
-          sx={{
-            display: "flex",
-            mx: "auto",
-            justifyContent: "space-between",
-            width: "90%",
-          }}
-        >
-          <IconButton aria-label="add to favorites">
-            <Checkbox
-              icon={<FavoriteBorder />}
-              checkedIcon={<Favorite sx={{ color: "red" }} />}
-            />
-          </IconButton>
-          <IconButton aria-label="add to favorites">
-            <Comment />
-          </IconButton>
-          <IconButton aria-label="share" sx={{ marginRight: "1rem" }}>
-            <Share />
-          </IconButton>
-        </CardActions>
+        {image && <CardMedia component="img" image={image} alt="Paella dish" />}
+        <PostFunctions setLike={setLike} post={otherKeys}  />
       </Card>
     </>
   );

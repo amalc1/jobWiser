@@ -93,4 +93,29 @@ module.exports = {
       return errbody(res, err);
     }
   },
+
+  like: async (req, res) => {
+    const { postId, userId } = req.body;
+    try {
+      let checkLiked = await Post.updateOne(
+        { _id: postId },
+        {
+          $pull: { likes: userId },
+        }
+      );
+
+      if (!checkLiked.modifiedCount) {
+        Post.findByIdAndUpdate(postId, {
+          $push: { likes: userId },
+        }).catch((err) => {
+          console.log(err);
+        });
+        return respbody(res, "liked");
+      } else {
+        return respbody(res, "unliked");
+      }
+    } catch (err) {
+      return errbody(res, err.message);
+    }
+  },
 };

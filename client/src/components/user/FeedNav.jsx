@@ -96,7 +96,6 @@ function FeedNav() {
   const open = Boolean(anchorEl);
   const { pathname } = location;
   const splitLocation = pathname.split("/");
-  console.log(splitLocation);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };

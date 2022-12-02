@@ -58,16 +58,17 @@ const AddPost = ({ setRender }) => {
     setImage("");
     setContent("");
     const { _id, name } = JSON.parse(localStorage.getItem("userInfo"));
-    const result = await postRequest("/posts", {
+    postRequest("/posts", {
       _id,
       name,
       postContent: content,
       image,
       date: new Date().toDateString(),
+    }).then((res) => {
+      if (res.success) {
+        setRender("renderAgain");
+      }
     });
-    if (result.success) {
-      setRender("renderAgain");
-    }
   };
 
   const handleChange = (e) => {

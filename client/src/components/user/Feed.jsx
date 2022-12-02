@@ -7,22 +7,28 @@ import Post from "./Post";
 
 const Feed = () => {
   const [posts, setPosts] = useState([]);
+  const [like, setLike] = useState(false);
   const [render, setRender] = useState("");
 
   let getPost = async () => {
     let { returnedValue } = await getRequest("/feed");
+    console.log('feedusef')
     setPosts(returnedValue);
   };
 
   useEffect(() => {
     getPost();
-  }, [render]);
+    console.log("useffPost",like);
+  }, [render,like]);
 
   return (
     <>
       <Box flex={3} display="flex" flexDirection="column">
         <AddPost setRender={setRender} />
-        {posts && posts.map((post) => <Post key={post._id} post={post} />)}
+        {posts &&
+          posts.map((post) => (
+            <Post key={post._id} post={post} setLike={setLike} />
+          ))}
       </Box>
     </>
   );
