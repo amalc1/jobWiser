@@ -12,13 +12,12 @@ const Feed = () => {
 
   let getPost = async () => {
     let { returnedValue } = await getRequest("/feed");
-    console.log('feedusef')
     setPosts(returnedValue);
   };
 
   useEffect(() => {
     getPost();
-    console.log("useffPost",like);
+    console.log("useffPost like->",like);
   }, [render,like]);
 
   return (

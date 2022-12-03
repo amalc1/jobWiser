@@ -36,6 +36,7 @@ const UserBox = styled(Box)({
 const StyledModal = styled(Modal)({
   display: "flex",
   alignItems: "center",
+  marginBottom:'9rem',
   justifyContent: "center",
 });
 
@@ -43,6 +44,7 @@ const AddPost = ({ setRender }) => {
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
+  let user = JSON.parse(localStorage.getItem("userInfo"));
 
   function previewFiles(file) {
     const reader = new FileReader();
@@ -151,7 +153,7 @@ const AddPost = ({ setRender }) => {
             <UserBox>
               <Avatar src={noAvatar} sx={{ width: 30, height: 30 }} />
               <Typography fontWeight={500} variant="span">
-                John Doe
+                {user.name}
               </Typography>
             </UserBox>
             <form onSubmit={handleSubmit}>

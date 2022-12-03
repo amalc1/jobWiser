@@ -118,4 +118,28 @@ module.exports = {
       return errbody(res, err.message);
     }
   },
+
+  comment: async (req, res) => {
+    let { userId, postId, userName, comment } = req.body;
+    let cmntDoc = {
+      userId,
+      name: userName,
+      comment,
+      timeStamp: new Date(),
+    };
+    try {
+      if (comment) {
+        Post.updateOne(
+          { _id: postId },
+          {
+            $push: { comments: cmntDoc },
+          }
+        ).then((res) => {
+          console.log(res);
+        });
+      }
+    } catch (err) {}
+
+    res.send("kdfjk");
+  },
 };
