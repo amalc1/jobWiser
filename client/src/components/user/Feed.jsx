@@ -17,12 +17,12 @@ const Feed = () => {
 
   useEffect(() => {
     getPost();
-    console.log("useffPost like->",like);
-  }, [render,like]);
+    console.log("useffPost like->", like);
+  }, [render, like]);
 
   return (
     <>
-      <Box flex={3} display="flex" flexDirection="column">
+      <Box flex={3} display="flex" flexDirection="column" >
         <AddPost setRender={setRender} />
         {posts &&
           posts.map((post) => (

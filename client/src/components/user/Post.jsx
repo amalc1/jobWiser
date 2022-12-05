@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { MoreVert, Send } from "@mui/icons-material";
 import {
   Avatar,
@@ -23,17 +23,20 @@ import { postRequest } from "../../helper/HandleRequest";
 
 const Post = ({ post, setLike }) => {
   const [expanded, setExpanded] = useState(false);
-  const [comment, setComment] = useState("");
+  let commentRef = useRef(null);
+
   const { name: userName, _id: userId } = JSON.parse(
     localStorage.getItem("userInfo")
   );
   let { name, description, image, date, ...otherKeys } = post;
-  post.comments.reverse();
+  let reversedCmnts = [...post.comments].reverse();
+
   const postComment = (postId) => {
+    let comment = commentRef.current.value;
     let reqData = { userId, postId, userName, comment };
     postRequest("/comment", reqData).then(() => {
       setLike((a) => !a);
-      setComment("");
+      commentRef.current.value = "";
     });
   };
 
@@ -63,59 +66,61 @@ const Post = ({ post, setLike }) => {
         />
 
         {/* commentBox */}
-        <Box sx={{ width: "94%", mx: "auto" }}>
-          <Stack
-            direction="row"
-            spacing={1}
-            alignItems="center"
-            pl={2}
-            pr={2}
-            height="100%"
-          >
-            <Avatar
-              flex={1}
-              alt="Remy Sharp"
-              src={noAvatar}
-              sx={{ width: 30, height: 30, mx: " auto", mb: 1, mt: 1 }}
-            />
-            <Box
-              flex={2}
-              display="flex"
-              sx={{
-                width: "100%",
-                padding: "0.1rem 0.5rem",
-                alignItems: "center",
-                minHeight: "2.1rem",
-                borderRadius: "24rem",
-                border: "1px solid gray",
-              }}
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Box sx={{ width: "94%", mx: "auto" }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              pl={2}
+              pr={2}
+              height="100%"
             >
-              <TextField
-                variant="standard" // <== changed this
-                margin="none"
-                multiline
-                required
-                fullWidth
-                autoFocus
-                placeholder="Add a comment..."
-                onChange={(e) => setComment(e.target.value)}
-                value={comment}
-                InputProps={{
-                  // startAdornment: "", // <== adjusted this
-                  disableUnderline: true, // <== added this
+              <Avatar
+                flex={1}
+                alt="Remy Sharp"
+                src={noAvatar}
+                sx={{ width: 30, height: 30, mx: " auto", mb: 1, mt: 1 }}
+              />
+              <Box
+                flex={2}
+                display="flex"
+                sx={{
+                  width: "100%",
+                  padding: "0.1rem 0.5rem",
+                  alignItems: "center",
+                  minHeight: "2.1rem",
+                  borderRadius: "24rem",
+                  border: "1px solid gray",
                 }}
-              />
-              <Send
-                onClick={() => postComment(post._id)}
-                sx={{ cursor: "pointer" }}
-              />
-            </Box>
-          </Stack>
-          <Divider fullwidth="true" sx={{ margin: "0.3rem 0" }} />
+              >
+                <TextField
+                  variant="standard" // <== changed this
+                  margin="none"
+                  multiline
+                  required
+                  fullWidth
+                  autoFocus
+                  placeholder="Add a comment..."
+                  // onChange={(e) => setComment(e.target.value)}
+                  // value={comment}
+                  inputRef={commentRef}
+                  InputProps={{
+                    // startAdornment: "", // <== adjusted this
+                    disableUnderline: true, // <== added this
+                  }}
+                />
+                <Send
+                  onClick={() => postComment(post._id)}
+                  sx={{ cursor: "pointer" }}
+                />
+              </Box>
+            </Stack>
+            <Divider fullwidth="true" sx={{ margin: "0.3rem 0" }} />
 
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            {post.comments.map((cmnt) => (
+            {reversedCmnts.map((cmnt) => (
               <Paper
+                key={cmnt._id}
                 style={{
                   padding: "0.5rem 1rem",
                   marginBottom: "0.4rem",
@@ -139,7 +144,7 @@ const Post = ({ post, setLike }) => {
                         fontSize: "0.85rem",
                       }}
                     >
-                       {cmnt.name}
+                      {cmnt.name}
                     </Typography>
                     <Box
                       sx={{
@@ -174,8 +179,8 @@ const Post = ({ post, setLike }) => {
                 </Grid>
               </Paper>
             ))}
-          </Collapse>
-        </Box>
+          </Box>
+        </Collapse>
       </Card>
     </>
   );

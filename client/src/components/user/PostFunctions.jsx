@@ -1,5 +1,17 @@
-import { Comment, Share, ThumbUp } from "@mui/icons-material";
-import { Box, CardActions, IconButton, Typography } from "@mui/material";
+import {
+  Comment,
+  Favorite,
+  FavoriteBorder,
+  Share,
+  ThumbUp,
+} from "@mui/icons-material";
+import {
+  Box,
+  CardActions,
+  Checkbox,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { postRequest } from "../../helper/HandleRequest";
 
@@ -32,9 +44,12 @@ const PostFunctions = ({ setLike, post, showComment }) => {
             }}
           >
             {post.likes.includes(userId) ? (
-              <ThumbUp sx={{ color: "#1b81ff" }} />
+              <Checkbox
+                icon={<ThumbUp sx={{ color: "#1b81ff" }} />}
+                checkedIcon={<ThumbUp sx={{ color: "#1b81ff" }} />}
+              />
             ) : (
-              <ThumbUp />
+              <Checkbox icon={<ThumbUp />} checkedIcon={<ThumbUp />} />
             )}
           </IconButton>
           <Typography variant="body2">{post.likes.length}</Typography>
