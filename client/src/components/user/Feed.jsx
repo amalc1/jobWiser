@@ -8,7 +8,7 @@ import Post from "./Post";
 const Feed = () => {
   const [posts, setPosts] = useState([]);
   const [like, setLike] = useState(false);
-  const [render, setRender] = useState("");
+  const [render, setRender] = useState(true);
 
   let getPost = async () => {
     let { returnedValue } = await getRequest("/feed");

@@ -139,7 +139,5 @@ module.exports = {
         });
       }
     } catch (err) {}
-
-    res.send("kdfjk");
   },
 };

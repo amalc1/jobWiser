@@ -48,7 +48,7 @@ const IndexPage = () => {
             </Box>
           </Box>
           <Box>
-            <Card sx={{ maxWidth: 500 }}>
+            <Card sx={{ maxWidth: 500 }} elevation={3}>
               <CardMedia component="img" height="500" image={hero} alt="hero" />
             </Card>
           </Box>

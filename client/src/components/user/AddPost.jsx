@@ -36,7 +36,7 @@ const UserBox = styled(Box)({
 const StyledModal = styled(Modal)({
   display: "flex",
   alignItems: "center",
-  marginBottom:'9rem',
+  marginBottom: "9rem",
   justifyContent: "center",
 });
 
@@ -60,6 +60,7 @@ const AddPost = ({ setRender }) => {
     setImage("");
     setContent("");
     const { _id, name } = JSON.parse(localStorage.getItem("userInfo"));
+    // postRequest('/imageUpload', )
     postRequest("/posts", {
       _id,
       name,
@@ -68,7 +69,7 @@ const AddPost = ({ setRender }) => {
       date: new Date().toDateString(),
     }).then((res) => {
       if (res.success) {
-        setRender("renderAgain");
+        setRender((a) => !a);
       }
     });
   };

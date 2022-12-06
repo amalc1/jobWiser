@@ -7,6 +7,7 @@ import Jobs from "./pages/user/Connect";
 import Messages from "./pages/user/Connect";
 import IndexPage from "./pages/user/IndexPage";
 import Login from "./pages/user/Login";
+import Profile from "./pages/user/Profile";
 import SignUp from "./pages/user/SignUp";
 import UserFeed from "./pages/user/UserFeed";
 
@@ -34,7 +35,8 @@ function App() {
             <Route element={<Connect />} path="/connect" />
             <Route element={<Jobs />} path="/jobs" />
             <Route element={<Messages />} path="/messages" />
-            <Route path="/notifications" />
+            <Route element={<Profile />} path="/profile" />
+            {/* <Route path="/notifications" /> */}
           </Route>
         </Routes>
       </Router>

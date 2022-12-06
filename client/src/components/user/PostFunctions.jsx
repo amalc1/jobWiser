@@ -1,7 +1,5 @@
 import {
   Comment,
-  Favorite,
-  FavoriteBorder,
   Share,
   ThumbUp,
 } from "@mui/icons-material";
@@ -52,7 +50,7 @@ const PostFunctions = ({ setLike, post, showComment }) => {
               <Checkbox icon={<ThumbUp />} checkedIcon={<ThumbUp />} />
             )}
           </IconButton>
-          <Typography variant="body2">{post.likes.length}</Typography>
+          <Typography variant="body2">{post.likes.length} like</Typography>
         </Box>
         <Box display="flex" alignItems="center">
           <IconButton
@@ -63,7 +61,7 @@ const PostFunctions = ({ setLike, post, showComment }) => {
           >
             <Comment sx={{ cursor: "pointer" }} />
           </IconButton>
-          <Typography variant="body2">{post.comments.length}</Typography>
+          <Typography variant="body2">{post.comments.length} comment</Typography>
         </Box>
         <IconButton aria-label="share">
           <Share />

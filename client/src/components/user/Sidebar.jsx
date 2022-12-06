@@ -1,6 +1,7 @@
 import { Avatar, Box, Paper, styled, Typography, Button } from "@mui/material";
 import React from "react";
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { GlobalContext } from "../../Context/Global";
 import noAvatar from "../../images/avatar.png";
 
@@ -21,7 +22,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const Sidebar = () => {
- const {loggedUser} = useContext(GlobalContext)
+  const { loggedUser } = useContext(GlobalContext);
 
   return (
     <ProBox flex={1}>
@@ -72,16 +73,18 @@ const Sidebar = () => {
               <Typography variant="body2">Jobs</Typography>
               <Typography>10</Typography>
             </Box>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "white",
-                color: "black",
-                "&:hover": { color: "white" },
-              }}
-            >
-              View Profile
-            </Button>
+            <Link to="/profile" style={{ textDecoration: "none" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "white",
+                  color: "black",
+                  "&:hover": { color: "white" },
+                }}
+              >
+                View Profile
+              </Button>
+            </Link>
           </Box>
         </StyledPaper>
       </Box>
