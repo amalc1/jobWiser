@@ -3,7 +3,9 @@ import React from 'react'
 
 const ProfileRight = () => {
   return (
-    <Box flex={3} sx={{backgroundColor:'lightgray'}}>ProfileRight dfdfdf</Box>
+    <Box flex={3} sx={{backgroundColor:'lightgray'}}>ProfileRight
+     ddfdfdf
+    </Box>
   )
 }
 
