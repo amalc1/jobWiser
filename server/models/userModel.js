@@ -54,4 +54,12 @@ userSchema.methods.generateToken = function () {
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = { User };
+const otp = mongoose.Schema({
+  email: { type: String },
+  otp: { type: Number },
+  // sessionActivity: { type: Date, expires: "60s", default: Date.now },
+});
+
+const UserOtp = mongoose.model("signupOtps", otp);
+
+module.exports = { User, UserOtp };

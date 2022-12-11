@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Paper,
   styled,
   Typography,
@@ -12,9 +13,9 @@ import { LockOutlined as LockOutlinedIcon } from "@mui/icons-material/";
 import Navbar from "../../components/user/Navbar";
 import FormInput from "../../components/user/FormInput";
 import { useForm } from "../../Hooks/useForm";
-// import { axiosUserInstance as axios } from "../../config/http";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { postRequest } from "../../helper/HandleRequest";
+import { useState } from "react";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.gray,
@@ -38,13 +39,17 @@ const SAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.palette.primary.blue,
 }));
 
-const doSignUp = async (values) => {
-  const route = "/signup";
-  const respData = await postRequest(route, values);
-  return respData
-};
-
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
+
+  const doSignUp = async (values) => {
+    const route = "/signup";
+    setLoading(true);
+    const respData = await postRequest(route, values);
+    if (respData) setLoading(false);
+    return respData;
+  };
+
   const { handleChange, errors, handleSubmit, confirmPasswordErr, fieldsErr } =
     useForm(doSignUp);
 
@@ -71,6 +76,13 @@ const SignUp = () => {
               <LockOutlinedIcon />
             </SAvatar>
             <Typography variant="h6">Sign Up</Typography>
+            {loading && (
+              <Typography variant="h6" sx={{ color: "#413AFD" }}>
+                Please wait...
+                <CircularProgress size="1.4rem" sx={{ color: "#413AFD" }} />
+              </Typography>
+            )}  
+
             {fieldsErr && (
               <Alert sx={{ textTransform: "capitalize" }} severity="error">
                 {fieldsErr}

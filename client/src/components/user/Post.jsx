@@ -102,8 +102,6 @@ const Post = ({ post, setLike }) => {
                   fullWidth
                   autoFocus
                   placeholder="Add a comment..."
-                  // onChange={(e) => setComment(e.target.value)}
-                  // value={comment}
                   inputRef={commentRef}
                   InputProps={{
                     // startAdornment: "", // <== adjusted this

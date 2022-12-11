@@ -80,9 +80,9 @@ export const useForm = (doSignUp) => {
     ) {
       // callback();
       doSignUp(values).then((data) => {
-        console.log(data);
         if (data.success) {
-          navigate("/login");
+          localStorage.setItem("tempUser", JSON.stringify(values));
+          navigate("/otp");
         } else {
           setAllFieldsErr(`${data.errNested}`);
           setTimeout(() => {
@@ -91,7 +91,6 @@ export const useForm = (doSignUp) => {
         }
       });
     } else if (Object.keys(values).length !== 5) {
-      // alert('fill all fields')
       setAllFieldsErr("Please Fill all Fields");
       setTimeout(() => {
         setAllFieldsErr("");
@@ -101,8 +100,6 @@ export const useForm = (doSignUp) => {
 
   const handleChange = (event) => {
     event.persist();
-    console.log("input name", event.target.name);
-    console.log("input value", event.target.value);
     let name = event.target.name;
     let val = event.target.value;
     validate(event, name, val, values);

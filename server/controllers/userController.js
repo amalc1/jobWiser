@@ -2,20 +2,66 @@ const { errbody, respbody } = require("../helper/generateResponse");
 const { User } = require("../models/userModel");
 const { Post } = require("../models/Post");
 const cloudinary = require("../helper/cloudinary");
+const { sendMail } = require("../helper/sendMail");
+const { saveOtpDb, checkOtpDb } = require("../helper/otpDb");
 
 module.exports = {
   doSignup: async (req, res) => {
     const { email } = req.body;
+    let generatedOtp = Math.floor(1000 + Math.random() * 9000);
     try {
       const userExist = await User.findOne({ email });
       if (userExist) return errbody(res, "user already exists");
-      const user = new User(req.body);
-      user.save((err, doc) => {
-        if (err) return errbody(res, err);
-        else return respbody(res, doc);
+      let mailObj = {
+        subject: "JobWiser SignUp OTP ✔",
+        to: email,
+        OTP: generatedOtp,
+      };
+      sendMail(mailObj).then((result) => {
+        saveOtpDb(email, generatedOtp);
+        if (result) {
+          return respbody(res, "sending Otp for confirmation");
+        } else {
+          return errbody(res, "otp generation failed");
+        }
       });
     } catch (err) {
-      return errbody(res, err);             //dfjkdfjkdjf
+      return errbody(res, err);
+    }
+  },
+
+  resendOtp: (req, res) => {
+    let { email } = req.body;
+    let generatedOtp = Math.floor(1000 + Math.random() * 9000);
+    let mailObj = {
+      subject: "JobWiser SignUp OTP ✔",
+      to: email,
+      OTP: generatedOtp,
+    };
+    sendMail(mailObj).then((result) => {
+      saveOtpDb(email, generatedOtp);
+      if (result) {
+        return respbody(res, "sending Otp for confirmation");
+      } else {
+        return errbody(res, "otp generation failed");
+      }
+    });
+  },
+
+  signupVerification: async (req, res) => {
+    const { email, otp } = req.body;
+    let status = await checkOtpDb(email, otp);
+    console.log(status);
+    if (status) {
+      User.create(req.body, (err, doc) => {
+        if (err) {
+          console.error(err);
+          return errbody(res, err.message);
+        }
+      });
+      return respbody(res, "Otp verified Successfully");
+    } else {
+      return errbody(res, "Please Enter correct Otp");
     }
   },
 

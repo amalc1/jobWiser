@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import OtpSection from "./components/user/OtpSection";
 import { AvoidLogdUser, UserAuth } from "./components/user/UserAuth";
 import { GlobalContext } from "./Context/Global";
 import Connect from "./pages/user/Connect";
@@ -28,6 +29,7 @@ function App() {
             <Route element={<IndexPage />} path="/" />
             <Route element={<Login />} path="/login" />
             <Route element={<SignUp />} path="/signup" />
+            <Route element={<OtpSection />} path="/otp" />
           </Route>
 
           <Route element={<UserAuth />}>

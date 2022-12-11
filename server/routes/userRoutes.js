@@ -6,11 +6,15 @@ const {
   getFeed,
   like,
   comment,
+  signupVerification,
+  resendOtp,
 } = require("../controllers/userController");
 const { verifyToken } = require("../middlewares/Auth");
 const router = express.Router();
 
 router.post("/signup", doSignup);
+router.post("/verify-otp", signupVerification);
+router.post("/resend-otp", resendOtp);
 router.post("/login", doLogin);
 router.post("/posts", verifyToken, post);
 router.get("/feed", verifyToken, getFeed);
