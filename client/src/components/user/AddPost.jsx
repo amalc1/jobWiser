@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Divider,
   Modal,
   Paper,
@@ -11,10 +12,11 @@ import {
   Typography,
 } from "@mui/material";
 import { Close, PhotoSizeSelectActual, Send } from "@mui/icons-material/";
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import noAvatar from "../../images/avatar.png";
 import { postRequest } from "../../helper/HandleRequest";
+import { GlobalContext } from "../../Context/Global";
 
 const SBox = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.gray,
@@ -43,8 +45,10 @@ const StyledModal = styled(Modal)({
 const AddPost = ({ setRender }) => {
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState("");
+  const [imgErr, setImgErr] = useState("");
   const [content, setContent] = useState("");
-  let user = JSON.parse(localStorage.getItem("userInfo"));
+  const [posting, setPosting] = useState(false);
+  const { loggedUser } = useContext(GlobalContext);
 
   function previewFiles(file) {
     const reader = new FileReader();
@@ -54,24 +58,59 @@ const AddPost = ({ setRender }) => {
     };
   }
 
+  function checkFile(file) {
+    let fileStr = file.split(",");
+    let extension;
+    switch (fileStr[0]) {
+      case "data:image/jpeg;base64":
+        extension = "jpeg";
+        break;
+      case "data:image/png;base64":
+        extension = "png";
+        break;
+      case "data:image/webp;base64":
+        extension = "webp";
+        break;
+      default:
+        extension = "other";
+        break;
+    }
+    if (extension === "other") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setOpen(false);
-    setImage("");
-    setContent("");
-    const { _id, name } = JSON.parse(localStorage.getItem("userInfo"));
-    // postRequest('/imageUpload', )
-    postRequest("/posts", {
-      _id,
-      name,
-      postContent: content,
-      image,
-      date: new Date().toDateString(),
-    }).then((res) => {
-      if (res.success) {
-        setRender((a) => !a);
-      }
-    });
+    setPosting(true);
+    setImgErr("");
+    const { _id, name } = loggedUser;
+    let InputFile = checkFile(image);
+    if (InputFile) {
+      postRequest("/posts", {
+        _id,
+        name,
+        postContent: content,
+        image,
+        date: new Date().toDateString(),
+      }).then((res) => {
+        setImage("");
+        if (res.success) {
+          setRender((a) => !a);
+          setPosting(false);
+          setOpen(false);
+          setContent("");
+        } else {
+          setPosting(false);
+          setOpen(false);
+        }
+      });
+    } else {
+      setImgErr("Please choose an image in jpeg, png or webp format");
+      setPosting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -145,18 +184,25 @@ const AddPost = ({ setRender }) => {
                   setOpen(false);
                   setImage("");
                   setContent("");
+                  setPosting(false);
+                  setImgErr("");
                 }}
               />
             </Box>
 
             <Divider />
-
+            {imgErr && (
+              <Typography textAlign="center" color="red">
+                {imgErr}
+              </Typography>
+            )}
             <UserBox>
               <Avatar src={noAvatar} sx={{ width: 30, height: 30 }} />
               <Typography fontWeight={500} variant="span">
-                {user.name}
+                {loggedUser?.name}
               </Typography>
             </UserBox>
+
             <form onSubmit={handleSubmit}>
               <TextField
                 sx={{ width: "100%" }}
@@ -186,6 +232,21 @@ const AddPost = ({ setRender }) => {
                     hidden
                   />
                 </Button>
+                {posting && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <Typography fontWeight={500} variant="span">
+                      Posting....
+                    </Typography>
+                    <CircularProgress size="1.5rem" />
+                  </Box>
+                )}
+
                 <Button type="submit">
                   <Send sx={{ color: "blue" }} />
                 </Button>

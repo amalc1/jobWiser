@@ -73,7 +73,7 @@ module.exports = {
         const correctPassword = await user.comparePassword(password);
         if (correctPassword) {
           const token = await user.generateToken();
-          return respbody(res, { ...user, token });
+          return respbody(res, { user, token });
         } else {
           return errbody(res, "Incorrect Password");
         }
@@ -180,10 +180,32 @@ module.exports = {
           {
             $push: { comments: cmntDoc },
           }
-        ).then((res) => {
-          console.log(res);
+        ).then(() => {
+          return respbody(res, "comment success");
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      return errbody(res, err.message);
+    }
+  },
+
+  deletePost: (req, res) => {
+    Post.deleteOne({ _id: req.query.post_id })
+      .then((data) => {
+        console.log(data);
+        return respbody(res, "post-deleted");
+      })
+      .catch((err) => {
+        console.log(err.message);
+        return errbody(res, err.message);
+      });
+  },
+  getUser: (req, res) => {
+    let userId = req.params.id;
+    User.findOne({ _id: userId })
+      .select("-password")
+      .then((doc) => {
+        respbody(res, doc);
+      });
   },
 };

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import "./FeedNav.css";
 import {
   AppBar,
@@ -89,7 +89,7 @@ const UserBox = styled(Box)(({ theme }) => ({
 }));
 
 function FeedNav() {
-  const { loggedUser } = useContext(GlobalContext);
+  const { loggedUser, setloggedUser } = useContext(GlobalContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -106,6 +106,7 @@ function FeedNav() {
   const doLogout = () => {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("userToken");
+    setloggedUser("");
     navigate("/");
   };
 
@@ -233,7 +234,7 @@ function FeedNav() {
                   open={open}
                   onClose={handleClose}
                   anchorReference="anchorPosition"
-                  anchorPosition={{ top: 190, left: 1390 }}
+                  anchorPosition={{ top: 155, left: 1390 }}
                   anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "center",
@@ -244,13 +245,12 @@ function FeedNav() {
                   }}
                 >
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={handleClose}>My account</MenuItem>
                   <MenuItem onClick={doLogout}>Logout</MenuItem>
                 </Menu>
 
                 <Typography
                   textAlign="center"
-                  sx={{ fontSize: "0.95rem" }}
+                  sx={{ fontSize: "0.77rem" }}
                   variant="span"
                 >
                   {loggedUser?.name}

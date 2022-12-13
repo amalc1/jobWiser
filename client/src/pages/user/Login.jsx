@@ -48,8 +48,7 @@ const doLogin = async (values) => {
 const Login = () => {
   const { handleChange, handleSubmit, errors, passErr, emailErr, fieldsErr } =
     useLoginForm(doLogin);
-  // const { email, password } = errors;
-  // console.log(errors);
+
   return (
     <>
       <Navbar />

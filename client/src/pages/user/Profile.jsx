@@ -9,7 +9,7 @@ const Profile = () => {
     <>
       <Box>
         <FeedNav />
-        <Stack direction="row" spacing={2} width="90%" sx={{ mx: "auto" }}>
+        <Stack direction="row" mt={3} spacing={3} width="85%" sx={{ mx: "auto" }}>
           <ProfileLeft />
           <ProfileRight />
         </Stack>

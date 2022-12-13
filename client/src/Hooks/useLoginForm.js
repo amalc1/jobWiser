@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/Global";
 
 export const useLoginForm = (doLogin) => {
+  const { setloggedUser } = useContext(GlobalContext);
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [emailErr, setEmailErr] = useState(null);
   const [fieldsErr, setAllFieldsErr] = useState("");
   const [passErr, setPassErr] = useState(null);
   const navigate = useNavigate();
-  const { setloggedUser } = useContext(GlobalContext);
   function validate(name, value) {
     switch (name) {
       case "email":
@@ -76,10 +76,11 @@ export const useLoginForm = (doLogin) => {
       doLogin(values).then((result) => {
         if (result.success) {
           let data = result.returnedValue;
-          delete data?._doc["password"];
+          setloggedUser(data?.user);
+          const lsUser = { _id: data.user._id };
+          console.log(lsUser);
           localStorage.setItem("userToken", data?.token);
-          localStorage.setItem("userInfo", JSON.stringify(data?._doc))
-          setloggedUser(data?._doc);
+          localStorage.setItem("userInfo", JSON.stringify(lsUser));
           navigate("/feed");
         } else {
           setAllFieldsErr(`${result.errNested}`);

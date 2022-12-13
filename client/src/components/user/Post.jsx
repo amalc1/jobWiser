@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { MoreVert, Send } from "@mui/icons-material";
 import {
   Avatar,
@@ -11,6 +11,8 @@ import {
   Divider,
   Grid,
   IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Stack,
   TextField,
@@ -19,25 +21,43 @@ import {
 import noAvatar from "../../images/avatar.png";
 import PostFunctions from "../user/PostFunctions";
 import { useState } from "react";
-import { postRequest } from "../../helper/HandleRequest";
+import { getRequest, postRequest } from "../../helper/HandleRequest";
+import { GlobalContext } from "../../Context/Global";
 
 const Post = ({ post, setLike }) => {
+  const { loggedUser } = useContext(GlobalContext);
   const [expanded, setExpanded] = useState(false);
   let commentRef = useRef(null);
 
-  const { name: userName, _id: userId } = JSON.parse(
-    localStorage.getItem("userInfo")
-  );
+  const { name: userName, _id: userId } = loggedUser;
   let { name, description, image, date, ...otherKeys } = post;
   let reversedCmnts = [...post.comments].reverse();
 
   const postComment = (postId) => {
     let comment = commentRef.current.value;
     let reqData = { userId, postId, userName, comment };
-    postRequest("/comment", reqData).then(() => {
+    postRequest("/comment", reqData).then((res) => {
       setLike((a) => !a);
       commentRef.current.value = "";
     });
+  };
+
+  const deletePost = (postId) => {
+    getRequest(`/delete-post/?post_id=${postId}`).then((res) => {
+      if (res.success) {
+        setLike((a) => !a);
+      }
+    });
+    handleClose();
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -47,7 +67,35 @@ const Post = ({ post, setLike }) => {
           avatar={<Avatar src={noAvatar} aria-label="recipe" />}
           action={
             <IconButton aria-label="settings">
-              <MoreVert />
+              <div>
+                <MoreVert
+                  id="basic-button"
+                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleClick}
+                />
+
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem onClick={handleClose} dense>
+                    Edit
+                  </MenuItem>
+                  <MenuItem onClick={handleClose} disabled dense>
+                    Report
+                  </MenuItem>
+                  <MenuItem onClick={() => deletePost(post._id)} dense>
+                    Delete
+                  </MenuItem>
+                </Menu>
+              </div>
             </IconButton>
           }
           title={name}

@@ -1,8 +1,4 @@
-import {
-  Comment,
-  Share,
-  ThumbUp,
-} from "@mui/icons-material";
+import { Comment, Share, ThumbUp } from "@mui/icons-material";
 import {
   Box,
   CardActions,
@@ -61,7 +57,13 @@ const PostFunctions = ({ setLike, post, showComment }) => {
           >
             <Comment sx={{ cursor: "pointer" }} />
           </IconButton>
-          <Typography variant="body2">{post.comments.length} comment</Typography>
+          {post.comments.length > 0 ? (
+            <Typography variant="body2">
+              {post.comments.length} comment
+            </Typography>
+          ) : (
+            <Typography variant="body2">comment</Typography>
+          )}
         </Box>
         <IconButton aria-label="share">
           <Share />

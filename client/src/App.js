@@ -3,6 +3,7 @@ import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import OtpSection from "./components/user/OtpSection";
 import { AvoidLogdUser, UserAuth } from "./components/user/UserAuth";
 import { GlobalContext } from "./Context/Global";
+import { getRequest } from "./helper/HandleRequest";
 import Connect from "./pages/user/Connect";
 import Jobs from "./pages/user/Connect";
 import Messages from "./pages/user/Connect";
@@ -17,7 +18,11 @@ function App() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userInfo"));
-    user ? setloggedUser(user) : setloggedUser(null);
+    if (user) {
+      getRequest(`/getUser/${user._id}`).then((res) => {
+        setloggedUser(res.returnedValue);
+      });
+    }
     console.log("app useff");
   }, [setloggedUser]);
 
