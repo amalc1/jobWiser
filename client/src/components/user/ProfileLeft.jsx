@@ -14,6 +14,8 @@ import { Close, Edit, Send } from "@mui/icons-material/";
 import React, { useContext, useState } from "react";
 import noAvatar from "../../images/avatar.png";
 import { GlobalContext } from "../../Context/Global";
+import { useRef } from "react";
+import { postRequest } from "../../helper/HandleRequest";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.gray,
@@ -31,6 +33,21 @@ const BlueButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const checkFile = (type) => {
+  switch (type) {
+    case "image/png":
+      return true;
+    case "image/jpg":
+      return true;
+    case "image/webp":
+      return true;
+    case "image/jpeg":
+      return true;
+    default:
+      return false;
+  }
+};
+
 const StyledModal = styled(Modal)({
   display: "flex",
   alignItems: "center",
@@ -40,6 +57,51 @@ const StyledModal = styled(Modal)({
 const ProfileLeft = () => {
   const { loggedUser } = useContext(GlobalContext);
   const [open, setOpen] = useState(false);
+  let data = {
+    designation: "",
+    about: "",
+  };
+
+  const [formData, setFormData] = useState(data);
+  const [skillArr, setSkillArr] = useState([]);
+  const [image, setImage] = useState("");
+  const skill = useRef(null);
+  function previewFiles(file) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImage(reader.result);
+    };
+  }
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleProfilePic = (e) => {
+    const file = e.target.files[0];
+    let checkImg = checkFile(file.type);
+    if (file && checkImg) {
+      previewFiles(file);
+    }
+  };
+  const addSkill = () => {
+    if (skill.current.value !== "") {
+      setSkillArr([...skillArr, skill.current.value]);
+      skill.current.value = "";
+    }
+  };
+  const deleteSkill = (index) => {
+    skillArr.splice(index, 1);
+    setSkillArr([...skillArr]);
+  };
+
+  const handleSubmit = (e) => {
+    let uId = loggedUser?._id;
+    formData.userId = uId;
+    formData.skills = skillArr;
+    formData.profile_pic = image;
+    formData.section = "profile-left";
+    postRequest("/setProfile", formData);
+  };
 
   return (
     <>
@@ -48,7 +110,7 @@ const ProfileLeft = () => {
           <Box sx={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
             <Avatar
               alt="Remy Sharp"
-              src={noAvatar}
+              src={loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar}
               sx={{ width: 88, height: 88, mx: " auto" }}
             />
             <Box>
@@ -56,9 +118,13 @@ const ProfileLeft = () => {
                 {loggedUser?.name}
               </Typography>
               <Box sx={{ width: "95%", mx: "auto" }}>
-                <p style={{ textAlign: "center" }}>designation:</p>
+                <p style={{ textAlign: "center" }}>
+                  {loggedUser?.designation
+                    ? loggedUser?.designation
+                    : "designation:"}
+                </p>
                 <p style={{ textAlign: "center", marginTop: "1.5rem" }}>
-                  About:
+                  {loggedUser?.designation ? loggedUser?.designation : "About:"}
                 </p>
                 <Edit
                   sx={{ cursor: "pointer", float: "right" }}
@@ -76,14 +142,20 @@ const ProfileLeft = () => {
                 Skills
               </Typography>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                <Chip
-                  label="html"
-                  variant="outlined"
-                  sx={{
-                    margin: "0.2rem",
-                    color: "black",
-                  }}
-                />
+                {loggedUser?.designation
+                  ? loggedUser?.skills.map((skill) => (
+                      <Chip
+                        label={skill}
+                        variant="outlined"
+                        sx={{
+                          margin: "0.2rem",
+                          color: "blue",
+                        }}
+                      />
+                    ))
+                  : ""}
+
+                {/*  */}
               </Box>
             </Box>
           </Box>
@@ -107,7 +179,6 @@ const ProfileLeft = () => {
             onClick={(e) => {
               setOpen(false);
               // setImage("");
-              // setContent("");
             }}
           />
 
@@ -115,9 +186,14 @@ const ProfileLeft = () => {
             <Grid item xs={7}>
               <TextField
                 style={{ width: "100%", margin: "5px" }}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
                 type="text"
+                name="designation"
                 label="Designation"
                 variant="outlined"
+                value={formData?.designation}
               />
             </Grid>
             <Grid item xs={5} display="flex" justifyContent="center">
@@ -125,10 +201,10 @@ const ProfileLeft = () => {
                 <Avatar
                   flex={1}
                   alt="Remy Sharp"
-                  src={noAvatar}
+                  src={image ? image : noAvatar}
                   sx={{
-                    width: 50,
-                    height: 50,
+                    width: 70,
+                    height: 70,
                     mx: " auto",
                   }}
                 />
@@ -143,7 +219,7 @@ const ProfileLeft = () => {
                   <input
                     type="file"
                     accept="image/png, image/jpeg, image/jpg, image/jfif"
-                    // onChange={handleChange}
+                    onChange={handleProfilePic}
                     hidden
                   />
                 </Box>
@@ -160,6 +236,11 @@ const ProfileLeft = () => {
                 rows={3}
                 placeholder="About........"
                 variant="standard"
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
+                name="about"
+                value={formData?.about}
               />
 
               <Box
@@ -174,11 +255,15 @@ const ProfileLeft = () => {
                     <TextField
                       style={{ width: "100%" }}
                       type="text"
+                      inputRef={skill}
                       label="Skills"
                       placeholder="Add Skills"
                       variant="outlined"
                     />
-                    <Send sx={{ margin: "0 0.3rem", cursor: "pointer" }} />
+                    <Send
+                      sx={{ margin: "0 0.3rem", cursor: "pointer" }}
+                      onClick={addSkill}
+                    />
                   </Grid>
                   <Grid item xs={6}>
                     <Box
@@ -189,14 +274,24 @@ const ProfileLeft = () => {
                         flexWrap: "wrap",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <Chip label="skill 1" />
-                        <Close sx={{ cursor: "pointer", fontSize: "1rem" }} />
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <Chip label="skill 1" />
-                        <Close sx={{ cursor: "pointer", fontSize: "1rem" }} />
-                      </div>
+                      {skillArr.length > 0
+                        ? skillArr.map((skill, index) => (
+                            <div
+                              key={index}
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Chip label={skill} />
+                              <Close
+                                sx={{
+                                  cursor: "pointer",
+                                  fontSize: "1rem",
+                                  color: "red",
+                                }}
+                                onClick={() => deleteSkill(index)}
+                              />
+                            </div>
+                          ))
+                        : ""}
                     </Box>
                   </Grid>
                 </Grid>
@@ -207,7 +302,12 @@ const ProfileLeft = () => {
                     margin: "0.8rem 0",
                   }}
                 >
-                  <BlueButton type="submit" size="medium" variant="contained">
+                  <BlueButton
+                    type="submit"
+                    size="medium"
+                    variant="contained"
+                    onClick={(e) => handleSubmit(e)}
+                  >
                     Save
                   </BlueButton>
                 </Box>

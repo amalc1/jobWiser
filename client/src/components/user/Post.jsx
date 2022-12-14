@@ -1,5 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { MoreVert, Send } from "@mui/icons-material";
+import Swal from "sweetalert2";
 import {
   Avatar,
   Box,
@@ -43,9 +44,19 @@ const Post = ({ post, setLike }) => {
   };
 
   const deletePost = (postId) => {
-    getRequest(`/delete-post/?post_id=${postId}`).then((res) => {
-      if (res.success) {
-        setLike((a) => !a);
+    Swal.fire({
+      text: "Are you sure to delete this post",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        getRequest(`/delete-post/?post_id=${postId}`).then((res) => {
+          if (res.success) {
+            setLike((a) => !a);
+          }
+        });
       }
     });
     handleClose();

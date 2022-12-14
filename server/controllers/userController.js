@@ -208,4 +208,44 @@ module.exports = {
         respbody(res, doc);
       });
   },
+
+  setProfile: async (req, res) => {
+    const { section } = req.body;
+    if (section === "profile-left") {
+      let { userId, designation, about, skills, profile_pic } = req.body;
+      if (profile_pic) {
+        let { url } = await cloudinary.uploader.upload(
+          profile_pic,
+          {
+            upload_preset: "jobWiser",
+            public_id: `profilePic${Date.now()}`,
+            allowed_formats: ["png", "jpg", "jpeg", "svg", "ico", "webp"],
+          },
+          function (err, result) {
+            if (err) {
+              console.log(err);
+            }
+          }
+        );
+        profile_pic = url;
+      }
+      User.findByIdAndUpdate(
+        userId,
+        {
+          designation,
+          about,
+          skills,
+          profile_pic,
+        },
+        { new: true }
+      )
+        .then((doc) => {
+          console.log(doc);
+          return respbody(res, doc);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  },
 };

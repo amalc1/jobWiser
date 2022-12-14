@@ -8,6 +8,7 @@ const {
   comment,
   deletePost,
   signupVerification,
+  setProfile,
   resendOtp,
   getUser,
 } = require("../controllers/userController");
@@ -25,10 +26,11 @@ router.post("/like", verifyToken, like);
 router.post("/comment", verifyToken, comment);
 router.get("/delete-post", verifyToken, deletePost);
 router.get("/getUser/:id", verifyToken, getUser);
+router.post("/setProfile", verifyToken, setProfile);
 
-// router.post("/createTestUser", (req, res) => {
-//   User.create(req.body);
-//   res.send("done");
-// });
+router.post("/createTestUser", (req, res) => {
+  User.create(req.body);
+  res.send("done");
+});
 
 module.exports = router;
