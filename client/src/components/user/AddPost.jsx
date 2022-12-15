@@ -132,7 +132,7 @@ const AddPost = ({ setRender }) => {
           <Avatar
             flex={1}
             alt="Remy Sharp"
-            src={noAvatar}
+            src={loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar}
             sx={{ width: 40, height: 40, mx: " auto", mb: 1, mt: 1 }}
           />
           <Box
@@ -197,7 +197,12 @@ const AddPost = ({ setRender }) => {
               </Typography>
             )}
             <UserBox>
-              <Avatar src={noAvatar} sx={{ width: 30, height: 30 }} />
+              <Avatar
+                src={
+                  loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar
+                }
+                sx={{ width: 30, height: 30 }}
+              />
               <Typography fontWeight={500} variant="span">
                 {loggedUser?.name}
               </Typography>

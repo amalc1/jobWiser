@@ -213,7 +213,8 @@ module.exports = {
     const { section } = req.body;
     if (section === "profile-left") {
       let { userId, designation, about, skills, profile_pic } = req.body;
-      if (profile_pic) {
+      let prevPic = await User.findById(userId).select("profile_pic");
+      if (profile_pic !== "" && profile_pic !== prevPic?.profile_pic) {
         let { url } = await cloudinary.uploader.upload(
           profile_pic,
           {

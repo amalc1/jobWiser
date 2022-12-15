@@ -1,6 +1,7 @@
 import { Edit } from "@mui/icons-material";
 import { Box, Divider, Grid, Paper, styled, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { GlobalContext } from "../../Context/Global";
 
 // const BlueButton = styled(Button)(({ theme }) => ({
 //   color: "white",
@@ -12,15 +13,17 @@ import React from "react";
 // }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.gray,
+  backgroundColor: "white",
   padding: "1rem",
   borderRadius: "15px",
 }));
 
 const BasicInfo = () => {
+  const { loggedUser } = useContext(GlobalContext);
+
   return (
     <>
-      <StyledPaper elevation={1}>
+      <StyledPaper elevation={3}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6" textAlign="start">
             Basic Information
@@ -113,7 +116,7 @@ const BasicInfo = () => {
                   marginBottom: "0.5rem",
                 }}
               >
-                25
+                {loggedUser?.mobile}
               </p>
               <Divider
                 fullwidth="true"
@@ -122,7 +125,9 @@ const BasicInfo = () => {
               <Typography variant="overline" sx={{ fontSize: "1rem" }}>
                 Email
               </Typography>
-              <p style={{ fontSize: "0.8rem", fontWeight: "bold" }}>25</p>
+              <p style={{ fontSize: "0.8rem", fontWeight: "bold" }}>
+                {loggedUser?.email}
+              </p>
             </Box>
           </Grid>
         </Grid>

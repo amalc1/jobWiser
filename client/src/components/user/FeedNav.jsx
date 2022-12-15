@@ -225,7 +225,14 @@ function FeedNav() {
                   aria-expanded={open ? "true" : undefined}
                   onClick={handleClick}
                 >
-                  <Avatar sx={{ width: 30, height: 30 }} src={noAvatar} />
+                  <Avatar
+                    sx={{ width: 30, height: 30 }}
+                    src={
+                      loggedUser?.profile_pic
+                        ? loggedUser?.profile_pic
+                        : noAvatar
+                    }
+                  />
                 </Button>
                 <Menu
                   id="demo-positioned-menu"

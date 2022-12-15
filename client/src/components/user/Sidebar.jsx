@@ -14,7 +14,7 @@ const ProBox = styled(Box)(({ theme }) => ({
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.gray,
+  backgroundColor: "white",
   padding: "0.8rem",
   borderRadius: "15px",
   marginTop: "3rem",
@@ -30,7 +30,7 @@ const Sidebar = () => {
         <StyledPaper elevation={8}>
           <Avatar
             alt="Remy Sharp"
-            src={noAvatar}
+            src={loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar}
             sx={{ width: 56, height: 56, mx: " auto", mb: 1, mt: 1 }}
           />
           <Box
@@ -44,7 +44,7 @@ const Sidebar = () => {
               {loggedUser?.name}
             </Typography>
             <Typography variant="overline" gutterBottom>
-              UI/UX Designer
+              {loggedUser?.designation}
             </Typography>
             <Box
               display="flex"

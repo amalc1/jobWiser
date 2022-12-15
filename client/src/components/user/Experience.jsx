@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.gray,
+  backgroundColor: "white",
   padding: "1rem",
   borderRadius: "15px",
   marginTop: "1rem",
@@ -19,7 +19,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const Experience = () => {
   return (
     <>
-      <StyledPaper elevation={1}>
+      <StyledPaper elevation={3}>
         {/* <Box sx={{ display: "flex", justifyContent: "end", width: "auto" }}> */}
         <Edit sx={{ cursor: "pointer", float: "right", width: "auto" }} />
         {/* </Box> */}

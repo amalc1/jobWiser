@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Grid,
   Modal,
   Paper,
@@ -11,14 +12,14 @@ import {
   Typography,
 } from "@mui/material";
 import { Close, Edit, Send } from "@mui/icons-material/";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import noAvatar from "../../images/avatar.png";
 import { GlobalContext } from "../../Context/Global";
 import { useRef } from "react";
-import { postRequest } from "../../helper/HandleRequest";
+import { getRequest, postRequest } from "../../helper/HandleRequest";
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.gray,
+const StyledPaper = styled(Paper)(() => ({
+  backgroundColor: "white",
   padding: "1rem",
   borderRadius: "15px",
 }));
@@ -55,17 +56,34 @@ const StyledModal = styled(Modal)({
 });
 
 const ProfileLeft = () => {
-  const { loggedUser } = useContext(GlobalContext);
+  const { loggedUser, setloggedUser } = useContext(GlobalContext);
+  const userId = JSON.parse(localStorage.getItem("userInfo"))._id;
   const [open, setOpen] = useState(false);
-  let data = {
+  const [saving, setSaving] = useState(false);
+
+  const [formData, setFormData] = useState({
     designation: "",
     about: "",
-  };
-
-  const [formData, setFormData] = useState(data);
+  });
   const [skillArr, setSkillArr] = useState([]);
   const [image, setImage] = useState("");
   const skill = useRef(null);
+
+  useEffect(() => {
+    getRequest(`/getUser/${userId}`).then((res) => {
+      const { returnedValue } = res;
+      setFormData((formData) => ({
+        //functional update
+        ...formData,
+        about: returnedValue.about,
+        designation: returnedValue.designation,
+      }));
+      setSkillArr(returnedValue?.skills);
+      setImage(returnedValue?.profile_pic);
+    });
+    console.log("rendering prof left");
+  }, [userId, loggedUser]);
+
   function previewFiles(file) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -95,18 +113,31 @@ const ProfileLeft = () => {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+    setSaving(true);
     let uId = loggedUser?._id;
     formData.userId = uId;
     formData.skills = skillArr;
     formData.profile_pic = image;
     formData.section = "profile-left";
-    postRequest("/setProfile", formData);
+    postRequest("/setProfile", formData).then((doc) => {
+      setloggedUser(doc?.returnedValue);
+      handleClose();
+    });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSaving(false);
   };
 
   return (
     <>
       <Box flex={1}>
         <StyledPaper elevation={3}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Edit sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} />
+          </Box>
           <Box sx={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
             <Avatar
               alt="Remy Sharp"
@@ -117,19 +148,23 @@ const ProfileLeft = () => {
               <Typography variant="h6" textAlign="center">
                 {loggedUser?.name}
               </Typography>
-              <Box sx={{ width: "95%", mx: "auto" }}>
-                <p style={{ textAlign: "center" }}>
+              <Box sx={{ width: "85%", mx: "auto" }}>
+                <p style={{ textAlign: "center", textTransform: "uppercase" }}>
                   {loggedUser?.designation
                     ? loggedUser?.designation
                     : "designation:"}
                 </p>
-                <p style={{ textAlign: "center", marginTop: "1.5rem" }}>
-                  {loggedUser?.designation ? loggedUser?.designation : "About:"}
+
+                <p
+                  style={{
+                    wordBreak: "break-all",
+                    color: "GrayText",
+                    textAlign: "center",
+                    marginTop: "1.5rem",
+                  }}
+                >
+                  {loggedUser?.designation ? loggedUser?.about : "About:"}
                 </p>
-                <Edit
-                  sx={{ cursor: "pointer", float: "right" }}
-                  onClick={() => setOpen(true)}
-                />
               </Box>
             </Box>
 
@@ -143,8 +178,9 @@ const ProfileLeft = () => {
               </Typography>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 {loggedUser?.designation
-                  ? loggedUser?.skills.map((skill) => (
+                  ? loggedUser?.skills.map((skill, i) => (
                       <Chip
+                        key={i}
                         label={skill}
                         variant="outlined"
                         sx={{
@@ -176,144 +212,143 @@ const ProfileLeft = () => {
         >
           <Close
             sx={{ cursor: "pointer", float: "right" }}
-            onClick={(e) => {
-              setOpen(false);
-              // setImage("");
-            }}
+            onClick={handleClose}
           />
 
-          <Grid container spacing={1}>
-            <Grid item xs={7}>
-              <TextField
-                style={{ width: "100%", margin: "5px" }}
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
-                type="text"
-                name="designation"
-                label="Designation"
-                variant="outlined"
-                value={formData?.designation}
-              />
-            </Grid>
-            <Grid item xs={5} display="flex" justifyContent="center">
-              <Box display="flex" alignItems="center">
-                <Avatar
-                  flex={1}
-                  alt="Remy Sharp"
-                  src={image ? image : noAvatar}
-                  sx={{
-                    width: 70,
-                    height: 70,
-                    mx: " auto",
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={1}>
+              <Grid item xs={7}>
+                <TextField
+                  style={{ width: "100%", margin: "5px" }}
+                  onChange={(e) => {
+                    handleInputChange(e);
                   }}
+                  type="text"
+                  name="designation"
+                  label="Designation"
+                  variant="outlined"
+                  value={formData?.designation}
+                  required
                 />
-                <Box component="label" size="small">
-                  <Edit
+              </Grid>
+              <Grid item xs={5} display="flex" justifyContent="center">
+                <Box display="flex" alignItems="center">
+                  <Avatar
+                    flex={1}
+                    alt="Remy Sharp"
+                    src={image ? image : noAvatar}
                     sx={{
-                      fontSize: "1rem",
-                      margin: "0 0.5rem",
-                      cursor: "pointer",
+                      width: 70,
+                      height: 70,
+                      mx: " auto",
                     }}
                   />
-                  <input
-                    type="file"
-                    accept="image/png, image/jpeg, image/jpg, image/jfif"
-                    onChange={handleProfilePic}
-                    hidden
-                  />
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs={12}>
-              <TextField
-                sx={{ width: "100%", margin: "5px" }}
-                id="standard-multiline-static"
-                multiline
-                rows={3}
-                placeholder="About........"
-                variant="standard"
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
-                name="about"
-                value={formData?.about}
-              />
-
-              <Box
-                sx={{
-                  width: "90%",
-                  mx: "auto",
-                  marginTop: "1rem",
-                }}
-              >
-                <Grid container spacing={1}>
-                  <Grid item xs={6} display="flex" alignItems="center">
-                    <TextField
-                      style={{ width: "100%" }}
-                      type="text"
-                      inputRef={skill}
-                      label="Skills"
-                      placeholder="Add Skills"
-                      variant="outlined"
-                    />
-                    <Send
-                      sx={{ margin: "0 0.3rem", cursor: "pointer" }}
-                      onClick={addSkill}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Box
+                  <Box component="label" size="small">
+                    <Edit
                       sx={{
-                        width: "100%",
-                        display: "flex",
-                        gap: "0.4rem",
-                        flexWrap: "wrap",
+                        fontSize: "1rem",
+                        margin: "0 0.5rem",
+                        cursor: "pointer",
                       }}
-                    >
-                      {skillArr.length > 0
-                        ? skillArr.map((skill, index) => (
-                            <div
-                              key={index}
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Chip label={skill} />
-                              <Close
-                                sx={{
-                                  cursor: "pointer",
-                                  fontSize: "1rem",
-                                  color: "red",
-                                }}
-                                onClick={() => deleteSkill(index)}
-                              />
-                            </div>
-                          ))
-                        : ""}
-                    </Box>
-                  </Grid>
-                </Grid>
+                    />
+                    <input
+                      type="file"
+                      accept="image/png, image/jpeg, image/jpg, image/jfif"
+                      onChange={handleProfilePic}
+                      hidden
+                    />
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: "100%", margin: "5px" }}
+                  id="standard-multiline-static"
+                  multiline
+                  rows={3}
+                  placeholder="About........"
+                  variant="standard"
+                  onChange={(e) => {
+                    handleInputChange(e);
+                  }}
+                  name="about"
+                  value={formData?.about}
+                  required
+                />
+
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    margin: "0.8rem 0",
+                    width: "90%",
+                    mx: "auto",
+                    marginTop: "1rem",
                   }}
                 >
-                  <BlueButton
-                    type="submit"
-                    size="medium"
-                    variant="contained"
-                    onClick={(e) => handleSubmit(e)}
+                  <Grid container spacing={1}>
+                    <Grid item xs={6} display="flex" alignItems="center">
+                      <TextField
+                        style={{ width: "100%" }}
+                        type="text"
+                        inputRef={skill}
+                        label="Skills"
+                        placeholder="Add Skills"
+                        variant="outlined"
+                      />
+                      <Send
+                        sx={{ margin: "0 0.3rem", cursor: "pointer" }}
+                        onClick={addSkill}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        sx={{
+                          width: "100%",
+                          display: "flex",
+                          gap: "0.4rem",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {skillArr.length > 0
+                          ? skillArr.map((skill, index) => (
+                              <div
+                                key={index}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Chip label={skill} />
+                                <Close
+                                  sx={{
+                                    cursor: "pointer",
+                                    fontSize: "1rem",
+                                    color: "red",
+                                  }}
+                                  onClick={() => deleteSkill(index)}
+                                />
+                              </div>
+                            ))
+                          : ""}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      margin: "0.8rem 0",
+                    }}
                   >
-                    Save
-                  </BlueButton>
+                    <BlueButton type="submit" size="medium" variant="contained">
+                      {saving ? <CircularProgress size="1.5rem" /> : "Save"}
+                    </BlueButton>
+                  </Box>
                 </Box>
-              </Box>
+              </Grid>
             </Grid>
-          </Grid>
+          </form>
         </Box>
       </StyledModal>
     </>
