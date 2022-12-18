@@ -282,6 +282,20 @@ module.exports = {
         .catch((err) => {
           console.log(err.message);
         });
+    } else if (section === "basic-info") {
+      const { userId, age, yearsOfExperience, ctc, location } = req.body;
+      User.findByIdAndUpdate(
+        userId,
+        {
+          age: parseInt(age),
+          yearsOfExperience: parseInt(yearsOfExperience),
+          ctc: parseInt(ctc),
+          location,
+        },
+        { new: true }
+      ).then((doc) => {
+        return respbody(res, doc);
+      });
     }
   },
 

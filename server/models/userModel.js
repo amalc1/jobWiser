@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema({
     type: Number,
   },
   age: { type: Number },
-  yearsOfExperienc: { type: Number },
+  yearsOfExperience: { type: Number },
   ctc: { type: Number },
   location: { type: String },
   designation: { type: String },
