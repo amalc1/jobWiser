@@ -205,6 +205,8 @@ module.exports = {
     User.findOne({ _id: userId })
       .select("-password")
       .then((doc) => {
+        doc?.experience.reverse();
+        doc?.education.reverse();
         respbody(res, doc);
       });
   },
@@ -241,12 +243,124 @@ module.exports = {
         { new: true }
       )
         .then((doc) => {
-          console.log(doc);
+          return respbody(res, doc);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } else if (section === "experience") {
+      let { userId, companyName, designation, timeSpan } = req.body;
+      let expId = Math.floor(1000 + Math.random() * 9000);
+      User.findByIdAndUpdate(
+        userId,
+        {
+          $push: { experience: { expId, companyName, designation, timeSpan } },
+        },
+        { new: true }
+      )
+        .then((doc) => {
+          doc?.experience.reverse();
+          return respbody(res, doc);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } else if (section === "education") {
+      let { userId, university, course, timeSpan } = req.body;
+      let eduId = Math.floor(1000 + Math.random() * 9000);
+      User.findByIdAndUpdate(
+        userId,
+        {
+          $push: { education: { eduId, university, course, timeSpan } },
+        },
+        { new: true }
+      )
+        .then((doc) => {
+          doc?.education.reverse();
           return respbody(res, doc);
         })
         .catch((err) => {
           console.log(err.message);
         });
     }
+  },
+
+  editProfileExperinece: async (req, res) => {
+    const { userId, expId, companyName, designation, timeSpan } = req.body;
+    await User.findOneAndUpdate(
+      { _id: userId, "experience.expId": Number(expId) },
+      {
+        $set: {
+          "experience.$.companyName": companyName,
+          "experience.$.designation": designation,
+          "experience.$.timeSpan": timeSpan,
+        },
+      },
+      {
+        new: true,
+      }
+    )
+      .then((doc) => {
+        doc?.experience.reverse();
+        return respbody(res, doc);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  },
+  editProfileEducation: async (req, res) => {
+    const { userId, eduId, university, course, timeSpan } = req.body;
+    console.log(req.body);
+    await User.findOneAndUpdate(
+      { _id: userId, "education.eduId": Number(eduId) },
+      {
+        $set: {
+          "education.$.university": university,
+          "education.$.course": course,
+          "education.$.timeSpan": timeSpan,
+        },
+      },
+      {
+        new: true,
+      }
+    )
+      .then((doc) => {
+        doc?.education.reverse();
+        return respbody(res, doc);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  },
+  deleteProfileExperinece: (req, res) => {
+    let { expId, userId } = req.query;
+    User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: {
+          experience: { expId: Number(expId) },
+        },
+      },
+      { new: true }
+    ).then((doc) => {
+      doc?.experience.reverse();
+      return respbody(res, doc);
+    });
+  },
+
+  deleteProfileEducation: (req, res) => {
+    let { eduId, userId } = req.query;
+    User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: {
+          education: { eduId: Number(eduId) },
+        },
+      },
+      { new: true }
+    ).then((doc) => {
+      doc?.education.reverse();
+      return respbody(res, doc);
+    });
   },
 };

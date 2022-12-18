@@ -19,10 +19,16 @@ const userSchema = mongoose.Schema({
   mobile: {
     type: Number,
   },
+  age: { type: Number },
+  yearsOfExperienc: { type: Number },
+  ctc: { type: Number },
+  location: { type: String },
   designation: { type: String },
   about: { type: String },
   profile_pic: { type: String },
   skills: { type: Array },
+  experience: { type: Array },
+  education: { type: Array },
 });
 
 userSchema.pre("save", async function (next) {

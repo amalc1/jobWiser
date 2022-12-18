@@ -75,7 +75,12 @@ const Post = ({ post, setLike }) => {
     <>
       <Card sx={{ height: "auto", margin: 4 }} elevation={8}>
         <CardHeader
-          avatar={<Avatar src={noAvatar} aria-label="recipe" />}
+          avatar={
+            <Avatar
+              src={loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar}
+              aria-label="recipe"
+            />
+          }
           action={
             <IconButton aria-label="settings">
               <div>

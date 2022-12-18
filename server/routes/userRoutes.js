@@ -9,6 +9,10 @@ const {
   deletePost,
   signupVerification,
   setProfile,
+  editProfileExperinece,
+  editProfileEducation,
+  deleteProfileExperinece,
+  deleteProfileEducation,
   resendOtp,
   getUser,
 } = require("../controllers/userController");
@@ -27,6 +31,10 @@ router.post("/comment", verifyToken, comment);
 router.get("/delete-post", verifyToken, deletePost);
 router.get("/getUser/:id", verifyToken, getUser);
 router.post("/setProfile", verifyToken, setProfile);
+router.post("/edit-experience", verifyToken, editProfileExperinece);
+router.post("/edit-education", verifyToken, editProfileEducation);
+router.get("/delete-experience", verifyToken, deleteProfileExperinece);
+router.get("/delete-education", verifyToken, deleteProfileEducation);
 
 router.post("/createTestUser", (req, res) => {
   User.create(req.body);
