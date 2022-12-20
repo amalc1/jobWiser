@@ -142,7 +142,7 @@ const ProfileLeft = () => {
             <Avatar
               alt="Remy Sharp"
               src={loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar}
-              sx={{ width: 88, height: 88, mx: " auto" }}
+              sx={{ width: 120, height: 120, mx: " auto" }}
             />
             <Box>
               <Typography variant="h6" textAlign="center">
@@ -159,6 +159,8 @@ const ProfileLeft = () => {
                   style={{
                     wordBreak: "break-all",
                     color: "GrayText",
+                    fontSize: "0.9rem",
+                    fontStyle: "italic",
                     textAlign: "center",
                     marginTop: "1.5rem",
                   }}

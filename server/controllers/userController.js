@@ -211,6 +211,51 @@ module.exports = {
       });
   },
 
+  getAllUser: (req, res) => {
+    let { userId } = req.query;
+    User.find({
+      $and: [{ _id: { $ne: userId } }, { connections: { $ne: userId } }],
+    })
+      .select("-password")
+      .then((doc) => {
+        respbody(res, doc);
+      });
+  },
+
+  getConnections: (req, res) => {
+    let { userId } = req.query;
+    User.find({
+      $and: [{ _id: { $ne: userId } }, { connections: { $eq: userId } }],
+    })
+      .select("-password")
+      .then((doc) => {
+        return respbody(res, doc);
+      });
+  },
+
+  connectUser: async (req, res) => {
+    try {
+      let { userId, connectId } = req.body;
+      let checkConnected = await User.updateOne(
+        { _id: connectId },
+        {
+          $pull: { connections: userId },
+        }
+      );
+      if (!checkConnected.modifiedCount) {
+        User.findByIdAndUpdate(connectId, {
+          $push: { connections: userId },
+        }).then((doc) => {
+          return respbody(res, "connected");
+        });
+      } else {
+        return respbody(res, "dis-connected");
+      }
+    } catch (err) {
+      return respbody(res, err.message);
+    }
+  },
+
   setProfile: async (req, res) => {
     const { section } = req.body;
     if (section === "profile-left") {

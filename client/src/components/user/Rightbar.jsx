@@ -1,5 +1,8 @@
-import { Box, Paper, styled, Typography,  Avatar } from "@mui/material";
-import React from "react";
+import { Box, Paper, styled, Typography, Avatar } from "@mui/material";
+import React, { useContext, useEffect } from "react";
+import { useState } from "react";
+import { GlobalContext } from "../../Context/Global";
+import { getRequest } from "../../helper/HandleRequest";
 
 const ProBox = styled(Box)(({ theme }) => ({
   display: "none",
@@ -18,6 +21,17 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const Rightbar = () => {
+  const userId = JSON.parse(localStorage.getItem("userInfo"))._id;
+  const { connected } = useContext(GlobalContext);
+  const [connections, setConnections] = useState([]);
+  useEffect(() => {
+    getRequest(`/get-connections?userId=${userId}`).then((res) => {
+      if (res.success) {
+        setConnections(res.returnedValue);
+      }
+    });
+  }, [userId, connected]);
+
   return (
     <ProBox flex={1.4}>
       <Box position="fixed">
@@ -28,78 +42,21 @@ const Rightbar = () => {
 
           <Box display="flex" width="90%" m={1}>
             <Box display="flex" flexDirection="column">
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/1.jpg"
-                />
-                <Typography variant="body1" ml={2}>
-                  james Don
-                </Typography>
-              </Box>
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/2.jpg"
-                  />
-                <Typography variant="body1" ml={2}>
-                  sam alex
-                </Typography>
-              </Box>
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/1.jpg"
-                />
-                <Typography variant="body1" ml={2}>
-                  james Don
-                </Typography>
-              </Box>
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/2.jpg"
-                  />
-                <Typography variant="body1" ml={2}>
-                  sam alex
-                </Typography>
-              </Box>
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/1.jpg"
-                />
-                <Typography variant="body1" ml={2}>
-                  james Don
-                </Typography>
-              </Box>
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/2.jpg"
-                  />
-                <Typography variant="body1" ml={2}>
-                  sam alex
-                </Typography>
-              </Box>
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/1.jpg"
-                />
-                <Typography variant="body1" ml={2}>
-                  james Don
-                </Typography>
-              </Box>
-              <Box ml={1} mb={1} display="flex" alignItems="center">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://material-ui.com/static/images/avatar/2.jpg"
-                  />
-                <Typography variant="body1" ml={2}>
-                  sam alex
-                </Typography>
-              </Box>
+              {connections &&
+                connections.map((user, index) => (
+                  <Box
+                    key={index}
+                    ml={1}
+                    mb={1}
+                    display="flex"
+                    alignItems="center"
+                  >
+                    <Avatar alt="Remy Sharp" src={user?.profile_pic} />
+                    <Typography variant="body1" ml={2}>
+                      {user?.name}
+                    </Typography>
+                  </Box>
+                ))}
             </Box>
           </Box>
         </StyledPaper>

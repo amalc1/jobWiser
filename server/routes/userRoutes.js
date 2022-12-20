@@ -8,11 +8,14 @@ const {
   comment,
   deletePost,
   signupVerification,
+  getConnections,
   setProfile,
+  connectUser,
   editProfileExperinece,
   editProfileEducation,
   deleteProfileExperinece,
   deleteProfileEducation,
+  getAllUser,
   resendOtp,
   getUser,
 } = require("../controllers/userController");
@@ -30,7 +33,10 @@ router.post("/like", verifyToken, like);
 router.post("/comment", verifyToken, comment);
 router.get("/delete-post", verifyToken, deletePost);
 router.get("/getUser/:id", verifyToken, getUser);
+router.get("/getAllUsers", verifyToken, getAllUser);
+router.get("/get-connections", verifyToken, getConnections);
 router.post("/setProfile", verifyToken, setProfile);
+router.post("/connect-user", verifyToken, connectUser);
 router.post("/edit-experience", verifyToken, editProfileExperinece);
 router.post("/edit-education", verifyToken, editProfileEducation);
 router.get("/delete-experience", verifyToken, deleteProfileExperinece);

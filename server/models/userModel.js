@@ -27,6 +27,7 @@ const userSchema = mongoose.Schema({
   about: { type: String },
   profile_pic: { type: String },
   skills: { type: Array },
+  connections: { type: Array },
   experience: { type: Array },
   education: { type: Array },
 });

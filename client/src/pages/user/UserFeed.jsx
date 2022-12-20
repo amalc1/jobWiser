@@ -18,7 +18,7 @@ const UserFeed = () => {
           // justifyContent="space-between"
         >
           <Sidebar />
-          <Feed />
+          <Feed  />
           <Rightbar />
         </Stack>
       </Box>

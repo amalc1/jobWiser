@@ -251,7 +251,9 @@ function FeedNav() {
                     horizontal: "center",
                   }}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <Link to="/profile" style={{ textDecoration: "none" }}>
+                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  </Link>
                   <MenuItem onClick={doLogout}>Logout</MenuItem>
                 </Menu>
 
