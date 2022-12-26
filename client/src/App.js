@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import OthersProfile from "./pages/user/OthersProfile";
 import OtpSection from "./components/user/OtpSection";
 import { AvoidLogdUser, UserAuth } from "./components/user/UserAuth";
 import { GlobalContext } from "./Context/Global";
@@ -40,6 +41,7 @@ function App() {
           <Route element={<UserAuth />}>
             <Route element={<UserFeed />} path="/feed" />
             <Route element={<Connect />} path="/connect" />
+            <Route element={<OthersProfile />} path="/user/:userId" />
             <Route element={<Jobs />} path="/jobs" />
             <Route element={<Messages />} path="/messages" />
             <Route element={<Profile />} path="/profile" />

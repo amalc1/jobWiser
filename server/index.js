@@ -20,6 +20,7 @@ mongoose
   });
 
 const userRoutes = require("./routes/userRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 // const adminRoutes = require("./routes/adminRoutes");
 
 app.use(cors());
@@ -30,6 +31,7 @@ app.use(logger("dev"));
 
 //routing
 app.use("/", userRoutes);
+app.use("/chat", chatRoutes);
 // app.use("/admin",adminRoutes);
 
 const port = process.env.PORT || 5000;

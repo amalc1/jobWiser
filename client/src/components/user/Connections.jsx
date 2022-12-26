@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { GlobalContext } from "../../Context/Global";
 import { getRequest, postRequest } from "../../helper/HandleRequest";
 
@@ -79,25 +80,33 @@ const Connections = () => {
                       marginBottom: "0.5rem",
                     }}
                   >
-                    <Avatar
-                      alt="Remy Sharp"
-                      src={user?.profile_pic}
-                      sx={{ width: 90, height: 90, mx: " auto" }}
-                    />
-                    <Typography
-                      variant="h6"
-                      textAlign="center"
-                      sx={{ fontSize: "1rem" }}
+                    <Link to={`/user/${user._id}`}>
+                      <Avatar
+                        alt="Remy Sharp"
+                        src={user?.profile_pic}
+                        sx={{ width: 90, height: 90, mx: " auto" }}
+                      />
+                    </Link>
+                    <Link
+                      to="/user"
+                      style={{ textDecoration: "none", color: "gray" }}
                     >
-                      {user?.name}
-                    </Typography>
+                      <Typography
+                        variant="h6"
+                        textAlign="center"
+                        sx={{ fontSize: "1rem" }}
+                      >
+                        {user?.name}
+                      </Typography>
+                    </Link>
+
                     <p
                       style={{
                         textAlign: "center",
                         textTransform: "uppercase",
                       }}
                     >
-                      {user?.designation}
+                      {user?.designation ? user?.designation : "------"}
                     </p>
 
                     {user?.connections?.includes(userId) ? (

@@ -6,6 +6,7 @@ const {
   getFeed,
   like,
   comment,
+  getPostComments,
   deletePost,
   signupVerification,
   getConnections,
@@ -31,6 +32,7 @@ router.post("/posts", verifyToken, post);
 router.get("/feed", verifyToken, getFeed);
 router.post("/like", verifyToken, like);
 router.post("/comment", verifyToken, comment);
+router.get("/get-comments", verifyToken, getPostComments);
 router.get("/delete-post", verifyToken, deletePost);
 router.get("/getUser/:id", verifyToken, getUser);
 router.get("/getAllUsers", verifyToken, getAllUser);
@@ -41,6 +43,9 @@ router.post("/edit-experience", verifyToken, editProfileExperinece);
 router.post("/edit-education", verifyToken, editProfileEducation);
 router.get("/delete-experience", verifyToken, deleteProfileExperinece);
 router.get("/delete-education", verifyToken, deleteProfileEducation);
+
+// chat Routes........................................................
+
 
 router.post("/createTestUser", (req, res) => {
   User.create(req.body);

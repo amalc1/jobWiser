@@ -24,15 +24,23 @@ import PostFunctions from "../user/PostFunctions";
 import { useState } from "react";
 import { getRequest, postRequest } from "../../helper/HandleRequest";
 import { GlobalContext } from "../../Context/Global";
+import { useEffect } from "react";
 
-const Post = ({ post, setLike }) => {
+const Post = ({ post, setLike, like }) => {
   const { loggedUser } = useContext(GlobalContext);
   const [expanded, setExpanded] = useState(false);
+  const [comments, setComments] = useState([]);
   let commentRef = useRef(null);
+
+  useEffect(() => {
+    getRequest(`/get-comments?postId=${post._id}`).then((res) => {
+      let { comments } = res.returnedValue;
+      setComments(comments);
+    });
+  }, [post._id, like]);
 
   const { name: userName, _id: userId } = loggedUser;
   let { name, description, image, date, ...otherKeys } = post;
-  let reversedCmnts = [...post.comments].reverse();
 
   const postComment = (postId) => {
     let comment = commentRef.current.value;
@@ -143,8 +151,10 @@ const Post = ({ post, setLike }) => {
               <Avatar
                 flex={1}
                 alt="Remy Sharp"
-                src={noAvatar}
-                sx={{ width: 30, height: 30, mx: " auto", mb: 1, mt: 1 }}
+                src={
+                  loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar
+                }
+                sx={{ width: 35, height: 35, mx: " auto", mb: 1, mt: 1 }}
               />
               <Box
                 flex={2}
@@ -180,7 +190,7 @@ const Post = ({ post, setLike }) => {
             </Stack>
             <Divider fullwidth="true" sx={{ margin: "0.3rem 0" }} />
 
-            {reversedCmnts.map((cmnt) => (
+            {comments?.map((cmnt) => (
               <Paper
                 key={cmnt._id}
                 style={{
@@ -192,9 +202,13 @@ const Post = ({ post, setLike }) => {
                 <Grid container wrap="nowrap" spacing={0.4}>
                   <Grid item>
                     <Avatar
-                      src={noAvatar}
+                      src={
+                        cmnt?.userId?.profile_pic
+                          ? cmnt?.userId?.profile_pic
+                          : noAvatar
+                      }
                       alt="Remy Sharp"
-                      sx={{ width: 20, height: 20 }}
+                      sx={{ width: 25, height: 25 }}
                     />
                   </Grid>
                   <Grid justifyContent="left" item xs zeroMinWidth>

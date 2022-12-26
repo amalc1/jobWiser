@@ -187,16 +187,16 @@ function FeedNav() {
                 </SIcon>
               </Link>
 
-              <Link to="/jobs" color="#0000">
+              {/* <Link to="/jobs" color="#0000">
                 <SIcon>
                   <WorkRounded
                     className={splitLocation[1] === "jobs" ? "active" : ""}
                     sx={{ width: "auto", height: "2rem" }}
                   />
                 </SIcon>
-              </Link>
+              </Link> */}
 
-              <StyledBadge badgeContent={3}>
+              {/* <StyledBadge badgeContent={3}> */}
                 <Link to="/messages" color="#0000">
                   <SIcon>
                     <MailRounded
@@ -207,7 +207,7 @@ function FeedNav() {
                     />
                   </SIcon>
                 </Link>
-              </StyledBadge>
+              {/* </StyledBadge> */}
 
               <StyledBadge badgeContent={4} color="success">
                 <SIcon>

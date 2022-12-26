@@ -189,6 +189,19 @@ module.exports = {
     }
   },
 
+  getPostComments: (req, res) => {
+    Post.findOne({ _id: req.query.postId })
+      .select("comments")
+      .populate("comments.userId")
+      .then((d) => {
+        d.comments.reverse();
+        return respbody(res, d);
+      })
+      .catch((err) => {
+        return errbody(err, err.message);
+      });
+  },
+
   deletePost: (req, res) => {
     Post.deleteOne({ _id: req.query.post_id })
       .then((data) => {

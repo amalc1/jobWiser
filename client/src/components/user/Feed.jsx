@@ -22,11 +22,11 @@ const Feed = () => {
 
   return (
     <>
-      <Box flex={3} display="flex" flexDirection="column" >
+      <Box flex={3} display="flex" flexDirection="column">
         <AddPost setRender={setRender} />
         {posts &&
           posts.map((post) => (
-            <Post key={post._id} post={post} setLike={setLike} />
+            <Post key={post._id} post={post} like={like} setLike={setLike} />
           ))}
       </Box>
     </>

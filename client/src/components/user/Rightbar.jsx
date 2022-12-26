@@ -1,6 +1,7 @@
 import { Box, Paper, styled, Typography, Avatar } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { GlobalContext } from "../../Context/Global";
 import { getRequest } from "../../helper/HandleRequest";
 
@@ -51,10 +52,18 @@ const Rightbar = () => {
                     display="flex"
                     alignItems="center"
                   >
-                    <Avatar alt="Remy Sharp" src={user?.profile_pic} />
-                    <Typography variant="body1" ml={2}>
-                      {user?.name}
-                    </Typography>
+                    <Link to={`/user/${user._id}`}>
+                      <Avatar alt="Remy Sharp" src={user?.profile_pic} />
+                    </Link>
+
+                    <Link
+                      to={`/user/${user._id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Typography variant="body1" ml={2}>
+                        {user?.name}
+                      </Typography>
+                    </Link>
                   </Box>
                 ))}
             </Box>
