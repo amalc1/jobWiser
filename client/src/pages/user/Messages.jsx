@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRef } from "react";
 import { io } from "socket.io-client";
 import ChatList from "../../components/user/Chat/ChatList";
@@ -7,6 +7,7 @@ import FeedNav from "../../components/user/FeedNav";
 import ChatBox from "../../components/user/Chat/ChatBox";
 import { getRequest } from "../../helper/HandleRequest";
 import "../../components/user/Chat/Chat.css";
+import { GlobalContext } from "../../Context/Global";
 
 const Messages = () => {
   const [chats, setChats] = useState([]);
@@ -15,7 +16,23 @@ const Messages = () => {
   const [sendMessage, setSendMessage] = useState(null);
   const [recievedMessage, setRecievedMessage] = useState(null);
   const userId = JSON.parse(localStorage.getItem("userInfo"))._id;
+  const { chatMembers, setChatMembers } = useContext(GlobalContext);
   const socket = useRef();
+
+  //messaging from profile
+  useEffect(() => {
+    // console.log(chatMembers);
+    if (chatMembers.senderId !== undefined) {
+      getRequest(
+        `/chat/find/${chatMembers?.senderId}/${chatMembers?.receiverId}`
+      ).then((data) => {
+        const { returnedValue } = data;
+        // console.log(returnedValue);
+        setCurrentChat(returnedValue);
+        setChatMembers({});
+      });
+    }
+  }, []);
 
   //add new user
   useEffect(() => {

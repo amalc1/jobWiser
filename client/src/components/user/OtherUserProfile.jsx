@@ -11,15 +11,16 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GlobalContext } from "../../Context/Global";
 import { getRequest, postRequest } from "../../helper/HandleRequest";
 
 const OtherUserProfile = () => {
   const { userId } = useParams();
+  const navigate = useNavigate();
   const loggedUserId = JSON.parse(localStorage.getItem("userInfo"))._id;
   const [user, setUser] = useState({});
-  const { connected, setConnected } = useContext(GlobalContext);
+  const { connected, setConnected, setChatMembers } = useContext(GlobalContext);
 
   useEffect(() => {
     getRequest(`/getUser/${userId}`).then((res) => {
@@ -36,6 +37,14 @@ const OtherUserProfile = () => {
         }
       }
     );
+  };
+
+  const messageUser = () => {
+    const createChat = { senderId: loggedUserId, receiverId: userId };
+    setChatMembers(createChat); //for fetching users message directly.. 
+    postRequest("/chat", createChat).then((res) => {
+      navigate("/messages");
+    });
   };
 
   return (
@@ -135,6 +144,7 @@ const OtherUserProfile = () => {
                         backgroundColor: "transparent",
                       },
                     }}
+                    onClick={() => messageUser()}
                   >
                     Message
                   </Button>

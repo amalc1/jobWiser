@@ -130,7 +130,10 @@ const ChatBox = ({ chat, currentUser, setSendMessage, recievedMessage }) => {
                     variant="contained"
                     size="small"
                     sx={{
-                      backgroundColor: "#4540DB",
+                      background:
+                        "linear-gradient(180deg, #4540db 20%, #509ff9 100%)",
+                      // backgroundColor: "#4540DB",
+
                       "&:hover": {
                         backgroundColor: "#413AFD",
                       },

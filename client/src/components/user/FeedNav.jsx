@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "./FeedNav.css";
 import {
   AppBar,
@@ -26,6 +26,8 @@ import {
 } from "@mui/icons-material/";
 import { GlobalContext } from "../../Context/Global";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+import { useRef } from "react";
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
@@ -89,7 +91,9 @@ const UserBox = styled(Box)(({ theme }) => ({
 }));
 
 function FeedNav() {
+  const socket = useRef();
   const { loggedUser, setloggedUser } = useContext(GlobalContext);
+  const userId = JSON.parse(localStorage.getItem("userInfo"))._id;
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -103,9 +107,15 @@ function FeedNav() {
     setAnchorEl(null);
   };
 
+  // useEffect(() => {
+  //   socket.current = io("http://localhost:8800");
+  //   socket.current.emit("new-user-add", userId);
+  // }, []);
+
   const doLogout = () => {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("userToken");
+    socket.current.emit("logout", userId);
     setloggedUser("");
     navigate("/");
   };
@@ -197,16 +207,14 @@ function FeedNav() {
               </Link> */}
 
               {/* <StyledBadge badgeContent={3}> */}
-                <Link to="/messages" color="#0000">
-                  <SIcon>
-                    <MailRounded
-                      className={
-                        splitLocation[1] === "messages" ? "active" : ""
-                      }
-                      sx={{ width: "auto", height: "2rem" }}
-                    />
-                  </SIcon>
-                </Link>
+              <Link to="/messages" color="#0000">
+                <SIcon>
+                  <MailRounded
+                    className={splitLocation[1] === "messages" ? "active" : ""}
+                    sx={{ width: "auto", height: "2rem" }}
+                  />
+                </SIcon>
+              </Link>
               {/* </StyledBadge> */}
 
               <StyledBadge badgeContent={4} color="success">

@@ -9,8 +9,14 @@ module.exports = {
       members: [senderId, receiverId],
     });
     try {
-      const result = await newChat.save();
-      return respbody(res, result);
+      let chatExist = await Chat.findOne({
+        members: { $all: [senderId, receiverId] },
+      });
+      if (!chatExist) {
+        const result = await newChat.save();
+        return respbody(res, result);
+      }
+      return respbody(res, "chat already exist");
     } catch (error) {
       return errbody(res, error.message);
     }
