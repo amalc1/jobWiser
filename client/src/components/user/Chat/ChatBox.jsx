@@ -24,20 +24,22 @@ const ChatBox = ({ chat, currentUser, setSendMessage, recievedMessage }) => {
 
   const handleSend = (e) => {
     e.preventDefault();
-    const message = {
-      senderId: currentUser,
-      text: newMessage,
-      chatId: chat._id,
-    };
+    if (newMessage !== "") {
+      const message = {
+        senderId: currentUser,
+        text: newMessage,
+        chatId: chat._id,
+      };
 
-    //send message to socket server
-    const recieverId = chat.members.find((id) => id !== currentUser);
-    setSendMessage({ ...message, recieverId });
-    // send to database
-    postRequest("/chat/message", message).then((data) => {
-      setNewMessage("");
-      setMessages([...messages, data.returnedValue]); //previous plus new message to the chat
-    });
+      //send message to socket server
+      const recieverId = chat.members.find((id) => id !== currentUser);
+      setSendMessage({ ...message, recieverId });
+      // send to database
+      postRequest("/chat/message", message).then((data) => {
+        setNewMessage("");
+        setMessages([...messages, data.returnedValue]); //previous plus new message to the chat
+      });
+    }
   };
 
   useEffect(() => {
@@ -82,7 +84,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, recievedMessage }) => {
               <>
                 <div>
                   <div className="chat-header">
-                    <Avatar />
+                    <Avatar src={userData?.profile_pic} />
                     <div className="name" style={{ fontSize: "0.9rem" }}>
                       <span
                         style={{
@@ -122,9 +124,8 @@ const ChatBox = ({ chat, currentUser, setSendMessage, recievedMessage }) => {
 
                 {/* chat sender */}
                 <div className="chat-sender">
-                  <div>+</div>
+                  {/* <div>+</div> */}
                   <InputEmoji value={newMessage} onChange={handleChange} />
-                  {/* GENERATE_SOURCEMAP=false on react scripts warning */}
                   <Button
                     variant="contained"
                     size="small"

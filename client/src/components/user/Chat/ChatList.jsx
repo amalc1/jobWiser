@@ -3,7 +3,7 @@ import React from "react";
 // import { useEffect } from "react";
 // import { useState } from "react";
 // import { getRequest } from "../../../helper/HandleRequest";
-import "../Chat/Chat.css";
+// import "../Chat/Chat.css";
 import Conversation from "./Conversation";
 
 const StyledPaper = styled(Paper)(() => ({
@@ -27,7 +27,7 @@ const ChatList = ({ chats, setCurrentChat, checkOnlineStatus }) => {
   return (
     <>
       <Box flex={1.8}>
-        <StyledPaper elevation={3}>
+        <StyledPaper elevation={3} sx={{ height: "32rem" }}>
           <div className="Left-side-chat">
             <Typography variant="h5" color="gray">
               Chats

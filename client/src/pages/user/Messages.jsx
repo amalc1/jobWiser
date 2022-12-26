@@ -6,6 +6,7 @@ import ChatList from "../../components/user/Chat/ChatList";
 import FeedNav from "../../components/user/FeedNav";
 import ChatBox from "../../components/user/Chat/ChatBox";
 import { getRequest } from "../../helper/HandleRequest";
+import "../../components/user/Chat/Chat.css";
 
 const Messages = () => {
   const [chats, setChats] = useState([]);
