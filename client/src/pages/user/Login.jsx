@@ -116,7 +116,7 @@ const Login = () => {
                   Login
                 </BlueButton>
                 <Grid container mt={2} px={1}>
-                  <Grid item xs>
+                  {/* <Grid item xs>
                     <Link variant="body2">
                       <Typography
                         sx={{
@@ -128,7 +128,7 @@ const Login = () => {
                         Login with otp
                       </Typography>
                     </Link>
-                  </Grid>
+                  </Grid> */}
                   <Grid item>
                     <Link to="/signup" variant="body2">
                       <Typography

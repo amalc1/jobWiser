@@ -1,5 +1,5 @@
 import { Avatar, Box, Paper, styled, Typography, Button } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "../../Context/Global";
@@ -10,6 +10,9 @@ const ProBox = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     display: "flex",
     justifyContent: "center",
+  },
+  [theme.breakpoints.between("600", "1139")]: {
+    display: "none",
   },
 }));
 
@@ -23,6 +26,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const Sidebar = () => {
   const { loggedUser } = useContext(GlobalContext);
+  // useEffect(() => {}, []);
 
   return (
     <ProBox flex={1}>
@@ -52,8 +56,8 @@ const Sidebar = () => {
               width="90%"
               mb={1}
             >
-              <Typography variant="body2">Connections</Typography>
-              <Typography>50</Typography>
+              <Typography variant="body2">Following</Typography>
+              <Typography>{loggedUser?.connections.length}</Typography>
             </Box>
             <Box
               display="flex"
@@ -64,15 +68,15 @@ const Sidebar = () => {
               <Typography variant="body2">Posts</Typography>
               <Typography>6</Typography>
             </Box>
-            <Box
+            {/* <Box
               display="flex"
               justifyContent="space-between"
               width="90%"
               mb={1}
             >
               <Typography variant="body2">Jobs</Typography>
-              <Typography>10</Typography>
-            </Box>
+              <Typography>0</Typography>
+            </Box> */}
             <Link to="/profile" style={{ textDecoration: "none" }}>
               <Button
                 variant="contained"

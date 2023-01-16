@@ -16,8 +16,7 @@ const Messages = () => {
   const [sendMessage, setSendMessage] = useState(null);
   const [recievedMessage, setRecievedMessage] = useState(null);
   const userId = JSON.parse(localStorage.getItem("userInfo"))._id;
-  const { chatMembers, setChatMembers } = useContext(GlobalContext);
-  const socket = useRef();
+  const { chatMembers, setChatMembers, socket } = useContext(GlobalContext);
 
   //messaging from profile
   useEffect(() => {
@@ -36,7 +35,7 @@ const Messages = () => {
 
   //add new user
   useEffect(() => {
-    socket.current = io("http://localhost:8800");
+    // socket.current = io("http://localhost:8800");
     socket.current.emit("new-user-add", userId);
     socket.current.on("get-users", (users) => {
       setOnlineUsers(users);

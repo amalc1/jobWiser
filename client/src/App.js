@@ -13,6 +13,7 @@ import Messages from "./pages/user/Messages";
 import Profile from "./pages/user/Profile";
 import SignUp from "./pages/user/SignUp";
 import UserFeed from "./pages/user/UserFeed";
+import SinglePost from "./components/user/SinglePost";
 
 function App() {
   const { setloggedUser } = useContext(GlobalContext);
@@ -45,7 +46,7 @@ function App() {
             <Route element={<Jobs />} path="/jobs" />
             <Route element={<Messages />} path="/messages" />
             <Route element={<Profile />} path="/profile" />
-            {/* <Route path="/notifications" /> */}
+            <Route element={<UserFeed />} path="/post/:postId" />
           </Route>
         </Routes>
       </Router>

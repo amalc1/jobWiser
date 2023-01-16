@@ -11,6 +11,9 @@ const ProBox = styled(Box)(({ theme }) => ({
     display: "flex",
     justifyContent: "center",
   },
+  [theme.breakpoints.between("600", "1139")]: {
+    display: "none",
+  },
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { MoreVert, Send } from "@mui/icons-material";
+import { Delete, MoreVert, Send } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import {
   Avatar,
@@ -22,12 +22,13 @@ import {
 import noAvatar from "../../images/avatar.png";
 import PostFunctions from "../user/PostFunctions";
 import { useState } from "react";
+import { format } from "timeago.js";
 import { getRequest, postRequest } from "../../helper/HandleRequest";
 import { GlobalContext } from "../../Context/Global";
 import { useEffect } from "react";
 
 const Post = ({ post, setLike, like }) => {
-  const { loggedUser } = useContext(GlobalContext);
+  const { loggedUser, socket } = useContext(GlobalContext);
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState([]);
   let commentRef = useRef(null);
@@ -48,6 +49,17 @@ const Post = ({ post, setLike, like }) => {
     postRequest("/comment", reqData).then((res) => {
       setLike((a) => !a);
       commentRef.current.value = "";
+      let socketData = {
+        name: loggedUser?.name,
+        pic: loggedUser?.profile_pic,
+        action: "commented",
+        time: Date.now(),
+        postId,
+        postOwnerId: post?.userId?._id,
+      };
+      if (userId !== post?.userId?._id) {
+        socket.current.emit("send-notifications", socketData);
+      }
     });
   };
 
@@ -70,6 +82,26 @@ const Post = ({ post, setLike, like }) => {
     handleClose();
   };
 
+  const deleteComment = (cmntId, postId) => {
+    Swal.fire({
+      text: "Are you sure to delete this comment",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        getRequest(
+          `/delete-comment?comment_id=${cmntId}&post_id=${postId}`
+        ).then((res) => {
+          if (res.success) {
+            setLike((a) => !a);
+          }
+        });
+      }
+    });
+  };
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -85,7 +117,9 @@ const Post = ({ post, setLike, like }) => {
         <CardHeader
           avatar={
             <Avatar
-              src={loggedUser?.profile_pic ? loggedUser?.profile_pic : noAvatar}
+              src={
+                post?.userId?.profile_pic ? post?.userId?.profile_pic : noAvatar
+              }
               aria-label="recipe"
             />
           }
@@ -112,9 +146,9 @@ const Post = ({ post, setLike, like }) => {
                   <MenuItem onClick={handleClose} dense>
                     Edit
                   </MenuItem>
-                  <MenuItem onClick={handleClose} disabled dense>
+                  {/* <MenuItem onClick={handleClose} disabled dense>
                     Report
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem onClick={() => deletePost(post._id)} dense>
                     Delete
                   </MenuItem>
@@ -229,6 +263,8 @@ const Post = ({ post, setLike, like }) => {
                         padding: "0.5rem 1rem",
                         marginTop: "0.3rem",
                         marginBottom: "0.2rem",
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
                     >
                       <Typography
@@ -240,17 +276,27 @@ const Post = ({ post, setLike, like }) => {
                       >
                         {cmnt.comment}
                       </Typography>
+                      <Delete
+                        sx={{
+                          cursor: "pointer",
+                          fontSize: "1rem",
+                          color: "red",
+                        }}
+                        onClick={() => {
+                          deleteComment(cmnt._id, post._id);
+                        }}
+                      />
                     </Box>
-                    {/* <Typography
-              variant="caption"
-              style={{
-                textAlign: "left",
-                color: "gray",
-                margin: "0.5rem 0.6rem",
-              }}
-            >
-              posted 1 minute ago
-            </Typography> */}
+                    <Typography
+                      variant="caption"
+                      style={{
+                        textAlign: "left",
+                        color: "gray",
+                        margin: "0.5rem 0.6rem",
+                      }}
+                    >
+                      {format(cmnt.timeStamp)}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Paper>
