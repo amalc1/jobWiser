@@ -4,14 +4,17 @@ const {
   doLogin,
   post,
   getFeed,
+  getPost,
   like,
   comment,
+  deleteComment,
   getPostComments,
   deletePost,
   signupVerification,
   getConnections,
   setProfile,
   connectUser,
+  searchUser,
   editProfileExperinece,
   editProfileEducation,
   deleteProfileExperinece,
@@ -19,6 +22,7 @@ const {
   getAllUser,
   resendOtp,
   getUser,
+  getUserDetails,
 } = require("../controllers/userController");
 const { verifyToken } = require("../middlewares/Auth");
 const { User } = require("../models/userModel");
@@ -29,23 +33,26 @@ router.post("/verify-otp", signupVerification);
 router.post("/resend-otp", resendOtp);
 router.post("/login", doLogin);
 router.post("/posts", verifyToken, post);
+router.get("/getPost", verifyToken, getPost);
 router.get("/feed", verifyToken, getFeed);
 router.post("/like", verifyToken, like);
 router.post("/comment", verifyToken, comment);
+router.get("/delete-comment", verifyToken, deleteComment);
 router.get("/get-comments", verifyToken, getPostComments);
 router.get("/delete-post", verifyToken, deletePost);
 router.get("/getUser/:id", verifyToken, getUser);
+router.get("/userDetails/:id", verifyToken, getUserDetails);
 router.get("/getAllUsers", verifyToken, getAllUser);
 router.get("/get-connections", verifyToken, getConnections);
 router.post("/setProfile", verifyToken, setProfile);
 router.post("/connect-user", verifyToken, connectUser);
+router.post("/search-user", verifyToken, searchUser);
 router.post("/edit-experience", verifyToken, editProfileExperinece);
 router.post("/edit-education", verifyToken, editProfileEducation);
 router.get("/delete-experience", verifyToken, deleteProfileExperinece);
 router.get("/delete-education", verifyToken, deleteProfileEducation);
 
 // chat Routes........................................................
-
 
 router.post("/createTestUser", (req, res) => {
   User.create(req.body);

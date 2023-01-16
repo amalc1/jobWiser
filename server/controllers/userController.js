@@ -1,4 +1,5 @@
 const { errbody, respbody } = require("../helper/generateResponse");
+const mongoose = require("mongoose");
 const { User } = require("../models/userModel");
 const { Post } = require("../models/Post");
 const cloudinary = require("../helper/cloudinary");
@@ -131,12 +132,20 @@ module.exports = {
   },
 
   getFeed: async (req, res) => {
-    let post = await Post.find({}).populate("userId");
     try {
+      let post = await Post.find({}).populate("userId");
       post.reverse();
       return respbody(res, post);
     } catch (err) {
       return errbody(res, err);
+    }
+  },
+
+  getPost: async (req, res) => {
+    try {
+      Post.find({ _id: req.query.postId }).then((data) => respbody(res, data));
+    } catch (err) {
+      errbody(res, err.message);
     }
   },
 
@@ -187,6 +196,21 @@ module.exports = {
     } catch (err) {
       return errbody(res, err.message);
     }
+  },
+
+  deleteComment: (req, res) => {
+    let { comment_id, post_id } = req.query;
+    Post.findOneAndUpdate(
+      { _id: post_id },
+      { $pull: { comments: { _id: comment_id } } },
+      { safe: true, multi: false }
+    )
+      .then((d) => {
+        return respbody(res, "comment deleted");
+      })
+      .catch((err) => {
+        return errbody(res, err.message);
+      });
   },
 
   getPostComments: (req, res) => {
@@ -267,6 +291,19 @@ module.exports = {
     } catch (err) {
       return respbody(res, err.message);
     }
+  },
+
+  searchUser: async (req, res) => {
+    let payload = req.body.payload.trim();
+    let search = await User.find(
+      {
+        name: { $regex: new RegExp("^" + payload + ".*", "i") },
+        _id: { $ne: req.body.userId },
+      },
+      { name: 1, profile_pic: 1 }
+    ).exec();
+    search = search.slice(0, 10); //limit search to 10
+    return respbody(res, search);
   },
 
   setProfile: async (req, res) => {
@@ -435,4 +472,33 @@ module.exports = {
       return respbody(res, doc);
     });
   },
+
+  getUserDetails: async (req, res) => {
+
+    let userId = mongoose.Types.ObjectId(req.params.id);
+    // let user = await User.aggregate([
+    //   {
+    //     $match: { _id: userId },
+    //   },
+    //   {
+    //     $project: {
+    //       connections: 1,
+    //       _id: 0,
+    //     },
+    //   },
+    // ]);
+    // let following = user[0].connections;
+    // let following_connections = [];
+    // for (let i = 0; i < following.length; i++) {
+    //   let doc = await User.findOne({ _id: following[i] });
+    //   following_connections.push(...doc);
+    // }
+
+    // res.send(user);
+
+    let user = await User.findOne({_id: userId}).populate("connections")
+    console.log("user....",user)
+    res.json(user)
+  },
+
 };
