@@ -32,6 +32,15 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("send-notifications", (data) => {
+    let { postOwnerId, ...notification } = data;
+    console.log(data);
+    const receiver = activeUsers.find((user) => user.userId === postOwnerId);
+    if (receiver) {
+      io.to(receiver.socketId).emit("receive-notification", notification);
+    }
+  });
+
   socket.on("logout", (userId) => {
     activeUsers = activeUsers.filter((user) => user.userId !== userId);
     console.log("user logout", activeUsers);
